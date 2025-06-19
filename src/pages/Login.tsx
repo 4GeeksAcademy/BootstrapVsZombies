@@ -29,7 +29,7 @@ const Login: React.FC = () => {
     const mockUser = {
       id: '1',
       email,
-      name: isRegister ? name : 'Test User',
+      name: isRegister ? name : 'Bootstrap Warrior',
     };
 
     dispatch({ type: 'LOGIN', payload: mockUser });
@@ -44,7 +44,7 @@ const Login: React.FC = () => {
           <Col md={6} lg={4}>
             <Card>
               <Card.Header>
-                <h4 className="mb-0">{isRegister ? 'Register' : 'Login'}</h4>
+                <h4 className="mb-0">🧟‍♂️ {isRegister ? 'Join the Fight' : 'Enter the Battle'}</h4>
               </Card.Header>
               <Card.Body>
                 {error && <Alert variant="danger">{error}</Alert>}
@@ -52,12 +52,12 @@ const Login: React.FC = () => {
                 <Form onSubmit={handleSubmit}>
                   {isRegister && (
                     <Form.Group className="mb-3">
-                      <Form.Label>Name</Form.Label>
+                      <Form.Label>Warrior Name</Form.Label>
                       <Form.Control
                         type="text"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        placeholder="Enter your name"
+                        placeholder="Enter your warrior name"
                       />
                     </Form.Group>
                   )}
@@ -83,7 +83,7 @@ const Login: React.FC = () => {
                   </Form.Group>
                   
                   <Button variant="primary" type="submit" className="w-100">
-                    {isRegister ? 'Register' : 'Login'}
+                    {isRegister ? 'Join Battle' : 'Enter Battle'}
                   </Button>
                 </Form>
                 
@@ -91,8 +91,9 @@ const Login: React.FC = () => {
                   <Button
                     variant="link"
                     onClick={() => setIsRegister(!isRegister)}
+                    style={{ color: '#8b5cf6' }}
                   >
-                    {isRegister ? 'Already have an account? Login' : "Don't have an account? Register"}
+                    {isRegister ? 'Already a warrior? Sign in' : "New recruit? Join the fight"}
                   </Button>
                 </div>
               </Card.Body>

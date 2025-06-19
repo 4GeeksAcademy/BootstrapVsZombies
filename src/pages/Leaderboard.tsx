@@ -8,7 +8,7 @@ const Leaderboard: React.FC = () => {
   const leaderboardData = [
     { rank: 1, name: "FlexMaster", score: 15420 },
     { rank: 2, name: "BootstrapPro", score: 12890 },
-    { rank: 3, name: "CSSWarrior", score: 11230 },
+    { rank: 3, name: "ZombieSlayer", score: 11230 },
     { rank: 4, name: "GridGuru", score: 9870 },
     { rank: 5, name: "FlexNinja", score: 8450 },
   ];
@@ -21,14 +21,14 @@ const Leaderboard: React.FC = () => {
           <Col lg={8}>
             <Card>
               <Card.Header>
-                <h3 className="mb-0">🏆 Leaderboard</h3>
+                <h3 className="mb-0">🏆 Bootstrap vs Zombies - Hall of Fame</h3>
               </Card.Header>
               <Card.Body>
-                <Table striped hover>
+                <Table dark striped hover>
                   <thead>
                     <tr>
                       <th>Rank</th>
-                      <th>Player</th>
+                      <th>Bootstrap Warrior</th>
                       <th>High Score</th>
                     </tr>
                   </thead>
@@ -37,6 +37,9 @@ const Leaderboard: React.FC = () => {
                       <tr key={player.rank}>
                         <td>
                           <strong>#{player.rank}</strong>
+                          {player.rank === 1 && ' 👑'}
+                          {player.rank === 2 && ' 🥈'}
+                          {player.rank === 3 && ' 🥉'}
                         </td>
                         <td>{player.name}</td>
                         <td className="text-success">

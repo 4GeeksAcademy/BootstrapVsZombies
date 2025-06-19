@@ -18,7 +18,7 @@ const Navigation: React.FC = () => {
       <Container>
         <Navbar.Brand>
           <Link to="/" className="navbar-brand">
-            <strong>Bootstrap Flex Fighters</strong>
+            <strong>🧟‍♂️ Bootstrap vs Zombies</strong>
           </Link>
         </Navbar.Brand>
         
