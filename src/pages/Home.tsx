@@ -29,9 +29,11 @@ const Home: React.FC = () => {
                 <Card.Text>
                   Use Bootstrap flex classes to position your defenses and stop the zombie invasion!
                 </Card.Text>
-                <Button as={Link} to="/game" variant="success" size="lg">
-                  Start Game
-                </Button>
+                <Link to="/game">
+                  <Button variant="success" size="lg">
+                    Start Game
+                  </Button>
+                </Link>
               </Card.Body>
             </Card>
           </Col>
@@ -43,9 +45,11 @@ const Home: React.FC = () => {
                 <Card.Text>
                   Compete with other students and track your progress in mastering flex properties.
                 </Card.Text>
-                <Button as={Link} to="/leaderboard" variant="info" size="lg">
-                  View Scores
-                </Button>
+                <Link to="/leaderboard">
+                  <Button variant="info" size="lg">
+                    View Scores
+                  </Button>
+                </Link>
               </Card.Body>
             </Card>
           </Col>

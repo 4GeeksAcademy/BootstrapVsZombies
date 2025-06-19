@@ -16,17 +16,19 @@ const Navigation: React.FC = () => {
   return (
     <Navbar bg="dark" variant="dark" expand="lg" className="mb-4">
       <Container>
-        <Navbar.Brand as={Link} to="/">
-          <strong>Bootstrap Flex Fighters</strong>
+        <Navbar.Brand>
+          <Link to="/" className="navbar-brand">
+            <strong>Bootstrap Flex Fighters</strong>
+          </Link>
         </Navbar.Brand>
         
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link as={Link} to="/">Home</Nav.Link>
-            <Nav.Link as={Link} to="/game">Game</Nav.Link>
-            <Nav.Link as={Link} to="/leaderboard">Leaderboard</Nav.Link>
+            <Link to="/" className="nav-link">Home</Link>
+            <Link to="/game" className="nav-link">Game</Link>
+            <Link to="/leaderboard" className="nav-link">Leaderboard</Link>
           </Nav>
           
           <Nav>
@@ -40,9 +42,9 @@ const Navigation: React.FC = () => {
                 </Button>
               </>
             ) : (
-              <Button as={Link} to="/login" variant="outline-light">
-                Login
-              </Button>
+              <Link to="/login">
+                <Button variant="outline-light">Login</Button>
+              </Link>
             )}
           </Nav>
         </Navbar.Collapse>
