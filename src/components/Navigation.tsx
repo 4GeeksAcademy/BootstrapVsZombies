@@ -1,15 +1,17 @@
 
 import React from 'react';
 import { Navbar, Nav, Container, Button } from 'react-bootstrap';
-import { LinkContainer } from 'react-router-bootstrap';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 
 const Navigation: React.FC = () => {
   const { user, signOut, loading } = useAuth();
+  const navigate = useNavigate();
 
   const handleSignOut = async () => {
     try {
       await signOut();
+      navigate('/');
     } catch (error) {
       console.error('Sign out error:', error);
     }
@@ -18,24 +20,24 @@ const Navigation: React.FC = () => {
   return (
     <Navbar bg="dark" variant="dark" expand="lg" className="mb-4">
       <Container>
-        <LinkContainer to="/">
-          <Navbar.Brand>🧟‍♂️ Bootstrap vs Zombies</Navbar.Brand>
-        </LinkContainer>
+        <Link to="/" className="navbar-brand">
+          🧟‍♂️ Bootstrap vs Zombies
+        </Link>
         
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <LinkContainer to="/">
-              <Nav.Link>Home</Nav.Link>
-            </LinkContainer>
+            <Link to="/" className="nav-link">Home</Link>
             {user && (
-              <LinkContainer to="/game">
-                <Nav.Link>Game</Nav.Link>
-              </LinkContainer>
+              <Link to="/game" className="nav-link">Game</Link>
             )}
-            <LinkContainer to="/leaderboard">
-              <Nav.Link>Leaderboard</Nav.Link>
-            </LinkContainer>
+            <Link to="/leaderboard" className="nav-link">Leaderboard</Link>
+            {user && (
+              <>
+                <Link to="/profile" className="nav-link">Profile</Link>
+                <Link to="/backend-test" className="nav-link">Backend Test</Link>
+              </>
+            )}
           </Nav>
           
           <Nav>
@@ -56,9 +58,9 @@ const Navigation: React.FC = () => {
                 </Button>
               </>
             ) : (
-              <LinkContainer to="/login">
+              <Link to="/login">
                 <Button variant="outline-light" size="sm">Login</Button>
-              </LinkContainer>
+              </Link>
             )}
           </Nav>
         </Navbar.Collapse>
