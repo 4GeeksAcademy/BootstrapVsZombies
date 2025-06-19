@@ -1,13 +1,12 @@
 import React, { createContext, useContext, useReducer, ReactNode } from 'react';
+import { User } from '@supabase/supabase-js';
 
 /**
  * Represents a user in the Bootstrap vs Zombies game
- * Used for authentication and leaderboard tracking
+ * Now using Supabase User type for proper authentication
  */
-interface User {
-  id: string;
-  email: string;
-  name: string;
+interface GameUser extends User {
+  // Additional game-specific user properties can be added here
 }
 
 /**
@@ -35,8 +34,7 @@ interface Pellet {
 
 /**
  * Main game state interface
- * Contains all game data managed by the React Context API
- * This demonstrates modern React patterns for state management
+ * Updated to use Supabase User type
  */
 interface GameState {
   // Game progression tracking
@@ -52,9 +50,9 @@ interface GameState {
   zombies: Zombie[];       // All active zombies on the board
   pellets: Pellet[];       // All active projectiles
   
-  // User authentication (for leaderboard persistence)
+  // User authentication (now using Supabase)
   isAuthenticated: boolean;
-  user: User | null;
+  user: GameUser | null;
 }
 
 /**
@@ -81,7 +79,7 @@ type GameAction =
   | { type: 'UPDATE_PELLETS'; payload: Pellet[] }
   
   // Authentication actions
-  | { type: 'LOGIN'; payload: User }
+  | { type: 'LOGIN'; payload: GameUser }
   | { type: 'LOGOUT' };
 
 /**
