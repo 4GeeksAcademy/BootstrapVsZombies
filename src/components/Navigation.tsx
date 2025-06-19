@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Navbar, Nav, Container, Button } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
@@ -35,7 +34,9 @@ const Navigation: React.FC = () => {
             {user && (
               <>
                 <Link to="/profile" className="nav-link">Profile</Link>
-                <Link to="/backend-test" className="nav-link">Backend Test</Link>
+                {user.email === 'sebasmiramontes@gmail.com' && (
+                  <Link to="/backend-test" className="nav-link">Backend Test</Link>
+                )}
               </>
             )}
           </Nav>

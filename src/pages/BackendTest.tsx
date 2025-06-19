@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Button, Form, Alert, Table } from 'react-bootstrap';
 import { useAuth } from '../hooks/useAuth';
@@ -23,6 +22,8 @@ interface GameStats {
   zombies_defeated: number;
 }
 
+const AUTHORIZED_EMAIL = 'sebasmiramontes@gmail.com';
+
 const BackendTest: React.FC = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
@@ -39,7 +40,12 @@ const BackendTest: React.FC = () => {
   useEffect(() => {
     if (!loading && !user) {
       navigate('/login');
-    } else if (user) {
+    } else if (user && user.email !== AUTHORIZED_EMAIL) {
+      setMessage({ type: 'error', text: 'Access denied. This tool is restricted to authorized users only.' });
+      setTimeout(() => {
+        navigate('/');
+      }, 2000);
+    } else if (user && user.email === AUTHORIZED_EMAIL) {
       fetchGameData();
     }
   }, [user, loading, navigate]);
@@ -126,6 +132,8 @@ const BackendTest: React.FC = () => {
         .upsert({
           user_id: user.id,
           ...updatedStats
+        }, {
+          onConflict: 'user_id'
         });
 
       if (statsError) throw statsError;
@@ -164,8 +172,22 @@ const BackendTest: React.FC = () => {
     );
   }
 
-  if (!user) {
-    return null;
+  if (!user || user.email !== AUTHORIZED_EMAIL) {
+    return (
+      <>
+        <Navigation />
+        <Container>
+          <Row>
+            <Col>
+              <Alert variant="danger" className="text-center">
+                <h4>Access Denied</h4>
+                <p>This tool is restricted to authorized users only.</p>
+              </Alert>
+            </Col>
+          </Row>
+        </Container>
+      </>
+    );
   }
 
   return (
