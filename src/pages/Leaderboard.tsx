@@ -6,9 +6,9 @@ import Navigation from '../components/Navigation';
 const Leaderboard: React.FC = () => {
   // Mock data for now
   const leaderboardData = [
-    { rank: 1, name: "FlexMaster", score: 15420 },
-    { rank: 2, name: "BootstrapPro", score: 12890 },
-    { rank: 3, name: "ZombieSlayer", score: 11230 },
+    { rank: 1, name: "Edwin", score: 15420 },
+    { rank: 2, name: "Sebas", score: 12890 },
+    { rank: 3, name: "Javi", score: 11230 },
     { rank: 4, name: "GridGuru", score: 9870 },
     { rank: 5, name: "FlexNinja", score: 8450 },
   ];
