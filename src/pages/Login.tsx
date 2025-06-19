@@ -1,9 +1,9 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Form, Button, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import Navigation from '../components/Navigation';
-import { useGame } from '../context/GameContext';
+import { useAuth } from '../hooks/useAuth';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -11,29 +11,54 @@ const Login: React.FC = () => {
   const [name, setName] = useState('');
   const [isRegister, setIsRegister] = useState(false);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   
-  const { dispatch } = useGame();
+  const { user, signIn, signUp } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Redirect if already logged in
+  useEffect(() => {
+    if (user) {
+      navigate('/game');
+    }
+  }, [user, navigate]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setLoading(true);
 
     // Simple validation
     if (!email || !password || (isRegister && !name)) {
       setError('Please fill in all fields');
+      setLoading(false);
       return;
     }
 
-    // Mock authentication - in real app, this would call an API
-    const mockUser = {
-      id: '1',
-      email,
-      name: isRegister ? name : 'Bootstrap Warrior',
-    };
-
-    dispatch({ type: 'LOGIN', payload: mockUser });
-    navigate('/game');
+    try {
+      if (isRegister) {
+        const { data, error } = await signUp(email, password, name);
+        if (error) throw error;
+        
+        if (data.user && !data.user.email_confirmed_at) {
+          setError('Please check your email and click the confirmation link to complete registration.');
+        } else if (data.user) {
+          navigate('/game');
+        }
+      } else {
+        const { data, error } = await signIn(email, password);
+        if (error) throw error;
+        
+        if (data.user) {
+          navigate('/game');
+        }
+      }
+    } catch (error: any) {
+      console.error('Auth error:', error);
+      setError(error.message || 'An error occurred during authentication');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -58,6 +83,7 @@ const Login: React.FC = () => {
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         placeholder="Enter your warrior name"
+                        disabled={loading}
                       />
                     </Form.Group>
                   )}
@@ -69,6 +95,7 @@ const Login: React.FC = () => {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="Enter email"
+                      disabled={loading}
                     />
                   </Form.Group>
                   
@@ -79,11 +106,12 @@ const Login: React.FC = () => {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="Password"
+                      disabled={loading}
                     />
                   </Form.Group>
                   
-                  <Button variant="primary" type="submit" className="w-100">
-                    {isRegister ? 'Join Battle' : 'Enter Battle'}
+                  <Button variant="primary" type="submit" className="w-100" disabled={loading}>
+                    {loading ? 'Loading...' : (isRegister ? 'Join Battle' : 'Enter Battle')}
                   </Button>
                 </Form>
                 
@@ -92,6 +120,7 @@ const Login: React.FC = () => {
                     variant="link"
                     onClick={() => setIsRegister(!isRegister)}
                     style={{ color: '#8b5cf6' }}
+                    disabled={loading}
                   >
                     {isRegister ? 'Already a warrior? Sign in' : "New recruit? Join the fight"}
                   </Button>
