@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card } from 'react-bootstrap';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -13,14 +12,42 @@ interface LeaderboardEntry {
 }
 
 const Leaderboard: React.FC = () => {
-  // Mock data for now
-  const leaderboardData = [
-    { rank: 1, name: "FlexMaster", score: 15420 },
-    { rank: 2, name: "BootstrapPro", score: 12890 },
-    { rank: 3, name: "ZombieSlayer", score: 11230 },
-    { rank: 4, name: "GridGuru", score: 9870 },
-    { rank: 5, name: "FlexNinja", score: 8450 },
-  ];
+  const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const fetchLeaderboard = async () => {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('game_stats')
+        .select(`
+          user_id,
+          high_score,
+          total_games,
+          levels_completed,
+          profiles (
+            display_name
+          )
+        `)
+        .order('high_score', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching leaderboard:', error);
+      } else {
+        const formatted = data.map((entry: any) => ({
+          display_name: entry.profiles?.display_name || 'Unknown',
+          high_score: entry.high_score,
+          total_games: entry.total_games,
+          levels_completed: entry.levels_completed,
+        }));
+        setLeaderboardData(formatted);
+      }
+
+      setLoading(false);
+    };
+
+    fetchLeaderboard();
+  }, []);
 
   return (
     <>
@@ -76,3 +103,5 @@ const Leaderboard: React.FC = () => {
 };
 
 export default Leaderboard;
+
+
