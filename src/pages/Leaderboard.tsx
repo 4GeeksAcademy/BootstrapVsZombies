@@ -24,7 +24,7 @@ const Leaderboard: React.FC = () => {
                 <h3 className="mb-0">🏆 Bootstrap vs Zombies - Hall of Fame</h3>
               </Card.Header>
               <Card.Body>
-                <Table dark striped hover>
+                <Table striped hover className="table-dark">
                   <thead>
                     <tr>
                       <th>Rank</th>
