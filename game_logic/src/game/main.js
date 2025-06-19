@@ -13,6 +13,12 @@ const config = {
     height: 768,
     parent: 'game-container',
     backgroundColor: '#028af8',
+    physics: {
+        default: 'arcade',
+        arcade: {
+            debug: false, // ponelo en true si querés ver colisiones visualmente
+        }
+    },
     scene: [
         Boot,
         Preloader,
@@ -29,3 +35,4 @@ const StartGame = (parent) => {
 }
 
 export default StartGame;
+
