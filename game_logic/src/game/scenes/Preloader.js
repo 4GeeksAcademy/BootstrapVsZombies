@@ -37,6 +37,7 @@ export class Preloader extends Scene
         this.load.image('turret', 'turret_vsc.png');
         this.load.image('zombie', 'zombie.png');
         this.load.image('bullet', 'bullet.png');
+        this.load.image('server', 'server.png');
         this.load.image('logo', 'logo.png');
         this.load.image('star', 'star.png');
     }

@@ -4,6 +4,7 @@ import { createTurrets } from '../utils/turretUtils';
 import { fireBullet } from '../utils/bulletUtils';
 import { createZombies } from '../utils/zombieUtils';
 import { handleZombieHit } from '../utils/effectsUtils';
+import { createServers } from '../utils/serverUtils';
 
 export class Game extends Phaser.Scene {
     constructor() {
@@ -28,6 +29,7 @@ export class Game extends Phaser.Scene {
         this.physics.resume();
         createGrid(this);
         createTurrets(this);
+        createServers(this); // Agrega los servers encima de las torretas
         this.zombies = this.physics.add.group();
         createZombies(this);
         this.bullets = this.physics.add.group();
