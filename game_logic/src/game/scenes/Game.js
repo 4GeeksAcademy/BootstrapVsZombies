@@ -151,6 +151,7 @@ export class Game extends Phaser.Scene {
             zombie.setData('health', health);
 
             if (health <= 0) {
+                this.explosionEmitter.explode(80, zombie.x, zombie.y);
                 zombie.destroy();
                 this.kills += 1;
                 this.killText.setText(`Zombies eliminados: ${this.kills}`);
