@@ -157,7 +157,7 @@ export class Game extends Phaser.Scene {
                 this.killText.setText(`Zombies eliminados: ${this.kills}`);
             } else {
                 zombie.setTint(Phaser.Display.Color.GetColor(255, health * 25, 0));
-                this.explosionEmitter.explode(15, zombie.x, zombie.y);
+                this.explosionEmitter.explode(5, zombie.x, zombie.y);
             }
         }, null, this);
 
