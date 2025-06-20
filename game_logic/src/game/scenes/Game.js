@@ -5,6 +5,7 @@ import { fireBullet } from '../utils/bulletUtils';
 import { createZombies } from '../utils/zombieUtils';
 import { handleZombieHit } from '../utils/effectsUtils';
 import { createServers } from '../utils/serverUtils';
+import { EventBus } from '../EventBus';
 
 export class Game extends Phaser.Scene {
     constructor() {
@@ -27,8 +28,16 @@ export class Game extends Phaser.Scene {
     create() {
         this.cameras.main.setBackgroundColor('#1c1f2b');
         this.physics.resume();
+        this.turretConfig = { numTurrets: 3, selectedRows: [0, 1, 2] };
+        EventBus.on('turret-config', (config) => {
+            this.turretConfig = config;
+            if (this.turrets) {
+                this.turrets.clear(true, true);
+            }
+            createTurrets(this, { cols: config.selectedRows });
+        });
         createGrid(this);
-        createTurrets(this);
+        createTurrets(this, { cols: this.turretConfig.selectedRows });
         createServers(this); // Agrega los servers encima de las torretas
         this.zombies = this.physics.add.group();
         createZombies(this);
