@@ -104,7 +104,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_leaderboard_data: {
+        Args: Record<string, never>;
+        Returns: {
+          display_name: string | null;
+          high_score: number;
+          total_games: number;
+          levels_completed: number;
+        }[];
+      };
     }
     Enums: {
       [_ in never]: never

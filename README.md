@@ -233,5 +233,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 **Ready to defend against the zombie apocalypse while mastering Bootstrap? Let the battle begin!** 🧟‍♂️⚔️
-
-*Made with ❤️ for educators and students learning web development*

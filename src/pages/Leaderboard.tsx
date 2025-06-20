@@ -1,50 +1,43 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card } from 'react-bootstrap';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import Navigation from '../components/Navigation';
-import { supabase } from '@/integrations/supabase/client';
+// src/pages/Leaderboard.tsx
 
-interface LeaderboardEntry {
-  display_name: string;
-  high_score: number;
-  total_games: number;
-  levels_completed: number;
-}
+import React, { useState, useEffect } from "react";
+import { Container, Row, Col, Card } from "react-bootstrap";
+import {
+  Table,
+  TableHeader,
+  TableRow,
+  TableHead,
+  TableBody,
+  TableCell,
+} from "@/components/ui/table";
+import Navigation from "@/components/Navigation";
+import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
+
+// Grab the return‐row type from your auto-generated types:
+type LeaderboardRow =
+  Database["public"]["Functions"]["get_leaderboard_data"]["Returns"][number];
 
 const Leaderboard: React.FC = () => {
-  const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>([]);
+  const [rows, setRows] = useState<LeaderboardRow[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const fetchLeaderboard = async () => {
+    async function fetchLeaderboard() {
       setLoading(true);
+
+      // no generics here, our `types.ts` knows get_leaderboard_data → LeaderboardRow[]
       const { data, error } = await supabase
-        .from('game_stats')
-        .select(`
-          user_id,
-          high_score,
-          total_games,
-          levels_completed,
-          profiles (
-            display_name
-          )
-        `)
-        .order('high_score', { ascending: false });
+        .rpc("get_leaderboard_data", {} as Record<string, never>);
 
       if (error) {
-        console.error('Error fetching leaderboard:', error);
+        console.error("RPC error:", error);
       } else {
-        const formatted = data.map((entry: any) => ({
-          display_name: entry.profiles?.display_name || 'Unknown',
-          high_score: entry.high_score,
-          total_games: entry.total_games,
-          levels_completed: entry.levels_completed,
-        }));
-        setLeaderboardData(formatted);
+        setRows(data ?? []);
       }
 
       setLoading(false);
-    };
+    }
 
     fetchLeaderboard();
   }, []);
@@ -52,16 +45,16 @@ const Leaderboard: React.FC = () => {
   return (
     <>
       <Navigation />
-      <Container>
+      <Container className="mt-4">
         <Row className="justify-content-center">
           <Col lg={10}>
-            <Card>
+            <Card bg="dark" text="light">
               <Card.Header>
-                <h3 className="mb-0">🏆 Bootstrap vs Zombies - Hall of Fame</h3>
+                <h3>🏆 Bootstrap vs Zombies: Hall of Fame</h3>
               </Card.Header>
               <Card.Body>
                 {loading ? (
-                  <div className="text-center">Loading leaderboard...</div>
+                  <div>Loading…</div>
                 ) : (
                   <Table>
                     <TableHeader>
@@ -74,20 +67,24 @@ const Leaderboard: React.FC = () => {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {leaderboardData.map((player, index) => (
-                        <TableRow key={index}>
+                      {rows.map((r, i) => (
+                        <TableRow key={r.display_name + i}>
                           <TableCell>
-                            <strong>#{index + 1}</strong>
-                            {index === 0 && ' 👑'}
-                            {index === 1 && ' 🥈'}
-                            {index === 2 && ' 🥉'}
+                            <strong>#{i + 1}</strong>{" "}
+                            {i === 0
+                              ? "👑"
+                              : i === 1
+                              ? "🥈"
+                              : i === 2
+                              ? "🥉"
+                              : ""}
                           </TableCell>
-                          <TableCell>{player.display_name}</TableCell>
+                          <TableCell>{r.display_name ?? "Unknown"}</TableCell>
                           <TableCell className="text-success">
-                            <strong>{player.high_score.toLocaleString()}</strong>
+                            <strong>{r.high_score.toLocaleString()}</strong>
                           </TableCell>
-                          <TableCell>{player.total_games}</TableCell>
-                          <TableCell>{player.levels_completed}</TableCell>
+                          <TableCell>{r.total_games}</TableCell>
+                          <TableCell>{r.levels_completed}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
@@ -103,5 +100,10 @@ const Leaderboard: React.FC = () => {
 };
 
 export default Leaderboard;
+
+
+
+
+
 
 
