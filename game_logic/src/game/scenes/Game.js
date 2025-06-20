@@ -97,7 +97,7 @@ export class Game extends Phaser.Scene {
     }
 
     fireBullet(turret) {
-        const bullet = this.bullets.create(turret.x, turret.y, 'bullet');
+        const bullet = this.bullets.create(turret.x, turret.y + 25, 'bullet');
 
         bullet.setDisplaySize(10, 20)
             .setTint(0xffff00)
