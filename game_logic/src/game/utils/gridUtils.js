@@ -11,6 +11,13 @@ export function createGrid(scene) {
         cell.setStrokeStyle(2, 0xcccccc, 0.4);
         cell.setData('col', i);
         scene.gridCells.push(cell);
+        // Agrega el número de columna en la parte inferior
+        const text = scene.add.text(x, scene.sys.game.config.height - 20, (i + 1).toString(), {
+            font: '18px Arial',
+            color: '#cccccc',
+            align: 'center'
+        });
+        text.setOrigin(0.5, 0.5);
     }
     const graphics = scene.add.graphics();
     graphics.lineStyle(1, 0xcccccc, 0.3);
