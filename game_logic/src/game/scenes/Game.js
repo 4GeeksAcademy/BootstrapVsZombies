@@ -5,6 +5,17 @@ export class Game extends Phaser.Scene {
         super({ key: 'Game' });
         // Lista de etiquetas HTML para "balas"
         this.htmlTags = ['p', 'h5', 'h4', 'h3', 'h2', 'h1'];
+        // Daño correspondiente a cada tag
+        this.tagDamage = {
+            'p': 1,
+            'h5': 2.5,
+            'h4': 4,
+            'h3': 5,
+            'h2': 10,
+            'h1': 15
+        };
+        // Probabilidades ponderadas (más probabilidad para menor daño)
+        this.tagWeights = [0.9, 0.08, 0.01, 0.009, 0.0008, 0.0002];
     }
 
     create() {
@@ -109,9 +120,10 @@ export class Game extends Phaser.Scene {
     }
 
     fireBullet(turret) {
-        // Solo permite disparar la etiqueta <p>
-        const tag = this.htmlTags[0]; // 'p'
-        // Crear un texto que representa la bala con la etiqueta
+        // Elegir tag aleatorio según ponderación
+        const tag = this.weightedRandomTag();
+        const damage = this.tagDamage[tag];
+        // Crear un texto que representa la bala con la etiqueta y daño
         const bullet = this.add.text(turret.x - 15, turret.y + 25, `<${tag}>`, {
             fontSize: '20px',
             color: '#ffff00',
@@ -120,13 +132,14 @@ export class Game extends Phaser.Scene {
         this.physics.add.existing(bullet);
         bullet.body.setAllowGravity(false);
         bullet.setData('tag', tag);
+        bullet.setData('damage', damage);
         bullet.setActive(true);
         bullet.setVisible(true);
         bullet.setData('velocityY', 100); // Guardar velocidad personalizada
         this.bullets.add(bullet);
 
         // Crear emitter de partículas tipo cohete para la bala
-        const rocketEmitter = this.add.particles(18, -5, 'bullet', {
+        const rocketEmitter = this.add.particles(18, -7, 'bullet', {
             speed: { min: 10, max: 30 },
             angle: { min: 260, max: 280 },
             scale: { start: 0.15, end: 0 },
@@ -137,6 +150,19 @@ export class Game extends Phaser.Scene {
             follow: bullet
         });
         bullet.setData('rocketEmitter', rocketEmitter);
+    }
+
+    weightedRandomTag() {
+        // Elige un tag según las probabilidades definidas
+        const weights = this.tagWeights;
+        const tags = this.htmlTags;
+        let sum = 0;
+        const r = Math.random();
+        for (let i = 0; i < weights.length; i++) {
+            sum += weights[i];
+            if (r < sum) return tags[i];
+        }
+        return tags[tags.length - 1]; // fallback
     }
 
     createZombies() {
@@ -170,9 +196,10 @@ export class Game extends Phaser.Scene {
             // Destruir el emitter asociado
             const emitter = bullet.getData('rocketEmitter');
             if (emitter) emitter.destroy();
+            const damage = bullet.getData('damage') || 1;
             bullet.destroy();
 
-            const health = zombie.getData('health') - 1;
+            const health = zombie.getData('health') - damage;
             zombie.setData('health', health);
 
             if (health <= 0) {
