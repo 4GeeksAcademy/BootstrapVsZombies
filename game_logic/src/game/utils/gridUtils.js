@@ -7,10 +7,9 @@ export function createGrid(scene) {
     scene.gridCells = [];
     for (let i = 0; i < cols; i++) {
         const x = i * colWidth + colWidth / 2;
-        const cell = scene.add.rectangle(x, defenseY, colWidth - 4, rowHeight - 4, 0x4db8ff, 0.2);
-        cell.setStrokeStyle(2, 0xcccccc, 0.4);
-        cell.setData('col', i);
-        scene.gridCells.push(cell);
+        // Ya no se crea el rectángulo de celda
+        // Solo se guarda la posición x de la columna
+        scene.gridCells.push({ x, col: i });
         // Agrega el número de columna en la parte inferior
         const text = scene.add.text(x, scene.sys.game.config.height - 20, (i + 1).toString(), {
             font: '18px Arial',
