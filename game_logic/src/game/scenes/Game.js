@@ -14,6 +14,14 @@ export class Game extends Phaser.Scene {
         this.createZombies();
         this.bullets = this.physics.add.group();
 
+        this.kills = 0;
+
+        this.killText = this.add.text(10, 20, 'Zombies eliminados: 0', {
+            fontSize: '18px',
+            fill: '#ffffff'
+        });
+
+
         this.time.addEvent({
             delay: 2000,
             callback: () => {
@@ -134,6 +142,8 @@ export class Game extends Phaser.Scene {
 
             if (health <= 0) {
                 zombie.destroy();
+                this.kills += 1;
+                this.killText.setText(`Zombies eliminados: ${this.kills}`);
             } else {
                 zombie.setTint(Phaser.Display.Color.GetColor(255, health * 25, 0));
             }
