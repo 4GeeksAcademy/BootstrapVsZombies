@@ -14,8 +14,17 @@ export class Game extends Phaser.Scene {
         this.createZombies();
         this.bullets = this.physics.add.group();
 
-        this.kills = 0;
+        this.explosionEmitter = this.add.particles(0, 0, 'star', {
+            speed: { min: -200, max: 200 },
+            lifespan: 300,
+            scale: { start: 0.4, end: 0 },
+            blendMode: 'ADD',
+            gravityY: 200,
+            quantity: 0,
+            on: false
+        });
 
+        this.kills = 0;
         this.killText = this.add.text(10, 20, 'Zombies eliminados: 0', {
             fontSize: '18px',
             fill: '#ffffff'
@@ -146,6 +155,7 @@ export class Game extends Phaser.Scene {
                 this.killText.setText(`Zombies eliminados: ${this.kills}`);
             } else {
                 zombie.setTint(Phaser.Display.Color.GetColor(255, health * 25, 0));
+                this.explosionEmitter.explode(15, zombie.x, zombie.y);
             }
         }, null, this);
 
