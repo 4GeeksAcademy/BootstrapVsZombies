@@ -1,5 +1,5 @@
 // Utilidad para crear los "servers" que las torretas defienden
-export function createServers(scene) {
+export function createServers(scene, config = {}) {
     if (!scene.gridCells || scene.gridCells.length === 0) return;
     scene.servers = [];
     for (let i = 0; i < scene.gridCells.length; i++) {
@@ -8,6 +8,7 @@ export function createServers(scene) {
         const serverY = 70; // 100 es defenseY, 64 es rowHeight
         const server = scene.add.image(colData.x, serverY, 'server');
         server.setDisplaySize(70, 70);
+        server.setData('health', config.health || 50);
         server.setDepth(2);
         server.setData('col', i);
         scene.servers.push(server);

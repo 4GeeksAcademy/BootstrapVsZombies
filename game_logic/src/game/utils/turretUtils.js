@@ -12,6 +12,7 @@ export function createTurrets(scene, config = {}) {
         const turret = scene.physics.add.image(x, turretY, 'turret').setDisplaySize(50, 50);
         turret.setImmovable(true);
         turret.setData('col', i);
+        turret.setData('health', config.health || 100); 
         scene.turrets.add(turret);
     }
 }

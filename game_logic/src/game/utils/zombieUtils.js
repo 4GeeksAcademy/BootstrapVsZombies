@@ -9,8 +9,9 @@ export function createZombies(scene) {
         .setDisplaySize(50, 50)
         .setCollideWorldBounds(true);
     zombie.body.setAllowGravity(false);
-    zombie.setData('health', 10);
+    zombie.setData('health', 100);
     zombie.setData('col', col);
+    zombie.setData('damage', 30); // Daño que causa el zombie al colisionar
     scene.zombies.add(zombie);
     zombie.setVelocityY(-20);
 }

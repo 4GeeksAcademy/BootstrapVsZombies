@@ -79,15 +79,9 @@ export class Game extends Phaser.Scene {
     }
 
     update() {
-        this.zombies.children.iterate((zombie) => {
-            if (zombie.y < 120) {
-                zombie.destroy();
-            }
-        })
         this.physics.add.overlap(this.bullets, this.zombies, (bullet, zombie) => {
             handleZombieHit(this, bullet, zombie);
         }, null, this);
-        // Mover manualmente los textos-bala
         this.bullets.children.iterate((bullet) => {
             if (bullet && bullet.active) {
                 const velocityY = bullet.getData('velocityY') || 0;
@@ -99,6 +93,18 @@ export class Game extends Phaser.Scene {
                     bullet.destroy();
                 }
             }
+        });
+                // Colisión entre zombies y torretas
+        this.physics.add.overlap(this.zombies, this.turrets, (zombie, turret) => {
+            const damage = zombie.getData('damage') || 10;
+            let health = turret.getData('health') || 100;
+            health -= damage;
+            console.log(health)
+            turret.setData('health', health);
+            zombie.destroy();
+            if (health <= 0) {
+                turret.destroy();
+            } // El zombie también se destruye al colisionar
         });
         this.time.addEvent({
             delay: 3000,
