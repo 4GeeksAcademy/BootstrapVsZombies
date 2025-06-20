@@ -9,7 +9,7 @@ export function createZombies(scene) {
         .setDisplaySize(50, 50)
         .setCollideWorldBounds(true);
     zombie.body.setAllowGravity(false);
-    zombie.setData('health', 5);
+    zombie.setData('health', 10);
     zombie.setData('col', col);
     scene.zombies.add(zombie);
     zombie.setVelocityY(-20);

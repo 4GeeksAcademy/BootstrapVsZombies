@@ -6,6 +6,21 @@ export function handleZombieHit(scene, bullet, zombie) {
     bullet.destroy();
     const health = zombie.getData('health') - damage;
     zombie.setData('health', health);
+
+    // Mostrar daño flotante
+    const damageText = scene.add.text(zombie.x + 20, zombie.y - 20, `-${damage}`,
+        { font: '23px Arial', fill: '#ff0000', stroke: '#fff', strokeThickness: 3 })
+        .setOrigin(0.5);
+    scene.tweens.add({
+        targets: damageText,
+        x: damageText.x + 50,
+        y: damageText.y - 70,
+        alpha: 0,
+        duration: 1500,
+        ease: 'Cubic.easeOut',
+        onComplete: () => damageText.destroy()
+    });
+
     if (health <= 0) {
         scene.explosionEmitter.explode(80, zombie.x, zombie.y);
         zombie.destroy();
