@@ -14,7 +14,7 @@ export class Game extends Phaser.Scene {
         this.createZombies();
         this.bullets = this.physics.add.group();
 
-        this.explosionEmitter = this.add.particles(0, 0, 'star', {
+        this.explosionEmitter = this.add.particles(0, 0, 'bullet', {
             speed: { min: -200, max: 200 },
             lifespan: 300,
             scale: { start: 0.4, end: 0 },
@@ -23,6 +23,7 @@ export class Game extends Phaser.Scene {
             quantity: 0,
             on: false
         });
+        this.explosionEmitter.setDepth(10);
 
         this.kills = 0;
         this.killText = this.add.text(10, 20, 'Zombies eliminados: 0', {
