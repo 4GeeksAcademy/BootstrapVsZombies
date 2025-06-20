@@ -3,6 +3,8 @@ import Phaser from 'phaser';
 export class Game extends Phaser.Scene {
     constructor() {
         super({ key: 'Game' });
+        // Lista de etiquetas HTML para "balas"
+        this.htmlTags = ['p', 'h5', 'h4', 'h3', 'h2', 'h1'];
     }
 
     create() {
@@ -107,14 +109,34 @@ export class Game extends Phaser.Scene {
     }
 
     fireBullet(turret) {
-        const bullet = this.bullets.create(turret.x, turret.y + 25, 'bullet');
+        // Solo permite disparar la etiqueta <p>
+        const tag = this.htmlTags[0]; // 'p'
+        // Crear un texto que representa la bala con la etiqueta
+        const bullet = this.add.text(turret.x - 15, turret.y + 25, `<${tag}>`, {
+            fontSize: '20px',
+            color: '#ffff00',
+        });
+        // Habilitar física para el texto
+        this.physics.add.existing(bullet);
+        bullet.body.setAllowGravity(false);
+        bullet.setData('tag', tag);
+        bullet.setActive(true);
+        bullet.setVisible(true);
+        bullet.setData('velocityY', 100); // Guardar velocidad personalizada
+        this.bullets.add(bullet);
 
-        bullet.setDisplaySize(10, 20)
-            .setTint(0xffff00)
-            .setVelocityY(100)
-            .setActive(true)
-            .setVisible(true)
-            .body.setAllowGravity(false);
+        // Crear emitter de partículas tipo cohete para la bala
+        const rocketEmitter = this.add.particles(18, -5, 'bullet', {
+            speed: { min: 10, max: 30 },
+            angle: { min: 260, max: 280 },
+            scale: { start: 0.15, end: 0 },
+            alpha: { start: 0.7, end: 0 },
+            lifespan: 400,
+            quantity: 1,
+            frequency: 40,
+            follow: bullet
+        });
+        bullet.setData('rocketEmitter', rocketEmitter);
     }
 
     createZombies() {
@@ -145,6 +167,9 @@ export class Game extends Phaser.Scene {
         })
 
         this.physics.add.overlap(this.bullets, this.zombies, (bullet, zombie) => {
+            // Destruir el emitter asociado
+            const emitter = bullet.getData('rocketEmitter');
+            if (emitter) emitter.destroy();
             bullet.destroy();
 
             const health = zombie.getData('health') - 1;
@@ -160,6 +185,21 @@ export class Game extends Phaser.Scene {
                 this.explosionEmitter.explode(5, zombie.x, zombie.y);
             }
         }, null, this);
+
+        // Mover manualmente los textos-bala
+        this.bullets.children.iterate((bullet) => {
+            if (bullet && bullet.active) {
+                const velocityY = bullet.getData('velocityY') || 0;
+                bullet.y += velocityY * (this.game.loop.delta / 1000);
+                // Destruir si sale de la pantalla
+                if (bullet.y > this.sys.game.config.height) {
+                    // Destruir el emitter asociado
+                    const emitter = bullet.getData('rocketEmitter');
+                    if (emitter) emitter.destroy();
+                    bullet.destroy();
+                }
+            }
+        });
 
         this.time.addEvent({
             delay: 3000,
