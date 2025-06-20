@@ -7,26 +7,11 @@ export class Game extends Phaser.Scene {
 
     create() {
         this.cameras.main.setBackgroundColor('#1c1f2b');
+        this.physics.resume();
         this.createGrid();
         this.createTurrets();
-    }
-
-    createTurrets() {
-        const cols = 12;
-        const colWidth = this.sys.game.config.width / cols;
-        const turretY = 100;
-
-        this.turrets = this.physics.add.group();
-
-        for (let i = 0; i < cols; i++) {
-            const x = i * colWidth + colWidth / 2;
-            const turret = this.physics.add.image(x, turretY, 'turret').setDisplaySize(50, 50);
-
-            turret.setImmovable(true); // No reacciona a colisiones
-            turret.setData('col', i);  // Para lógica futura (qué columna defiende)
-
-            this.turrets.add(turret);
-        }
+        this.zombies = this.physics.add.group();
+        this.createZombies();
     }
 
     createGrid() {
@@ -66,4 +51,51 @@ export class Game extends Phaser.Scene {
             }
         }
     }
+
+    createTurrets() {
+        const cols = 12;
+        const colWidth = this.sys.game.config.width / cols;
+        const turretY = 100;
+
+        this.turrets = this.physics.add.group();
+
+        for (let i = 0; i < cols; i++) {
+            const x = i * colWidth + colWidth / 2;
+            const turret = this.physics.add.image(x, turretY, 'turret').setDisplaySize(50, 50);
+
+            turret.setImmovable(true); // No reacciona a colisiones
+            turret.setData('col', i);  // Para lógica futura (qué columna defiende)
+
+            this.turrets.add(turret);
+        }
+    }
+
+    createZombies() {        
+        const cols = 12;
+        const colWidth = this.sys.game.config.width / cols;
+        const zombieY = 700;
+        const zombieX = 5 * colWidth + colWidth / 2;
+
+        const zombie = this.physics.add.image(zombieX, zombieY, 'zombie')
+            .setDisplaySize(50, 50)
+            .setCollideWorldBounds(true);
+
+        zombie.body.setAllowGravity(false);
+        zombie.setTint(0x00ff00);
+
+        this.zombies.add(zombie);
+
+        zombie.setVelocityY(-40); 
+    }
+
+    update() {
+        console.log('Update loop activo');
+        this.zombies.children.iterate((zombie) => {
+            if (zombie.y < 120) {
+                zombie.destroy();
+            }
+        })
+    }
+
+
 }

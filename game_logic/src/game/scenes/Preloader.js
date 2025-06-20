@@ -35,6 +35,7 @@ export class Preloader extends Scene
         this.load.setPath('assets');
 
         this.load.image('turret', '../../../public/assets/turret.png');
+        this.load.image('zombie', '../../../public/assets/zombie.png');
         this.load.image('logo', 'logo.png');
         this.load.image('star', 'star.png');
     }
