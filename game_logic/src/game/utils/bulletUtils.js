@@ -27,7 +27,7 @@ export function fireBullet(scene, turret, htmlTags, tagDamage, tagWeights) {
     const rocketEmitter = scene.add.particles(18, -7, 'bullet', {
         speed: { min: 10, max: 30 },
         angle: { min: 260, max: 280 },
-        scale: { start: 0.15, end: 0 },
+        scale: { start: 0.20, end: 0 },
         alpha: { start: 0.7, end: 0 },
         lifespan: 400,
         quantity: 1,

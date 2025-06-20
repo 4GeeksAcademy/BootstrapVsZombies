@@ -13,8 +13,8 @@ export class Game extends Phaser.Scene {
         // Daño correspondiente a cada tag
         this.tagDamage = {
             'p': 1,
-            'h5': 2.5,
-            'h4': 4,
+            'h5': 2,
+            'h4': 3,
             'h3': 5,
             'h2': 10,
             'h1': 15
