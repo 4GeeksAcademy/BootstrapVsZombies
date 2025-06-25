@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { GridObject } from '../objects/gridObject';
+import { ServerObject } from '../objects/serverObject';
 import { ZombieObject } from '../objects/zombieObject';
 import { EventBus } from '../EventBus';
 
@@ -14,6 +15,9 @@ export class Game extends Phaser.Scene {
 
         this.grid = new GridObject(this, 12);
         this.grid.createGrid();
+
+        this.server = new ServerObject(this)
+        this.server.createServers()
 
         //this.zombies = this.physics.add.group();
         //createZombies(this);
