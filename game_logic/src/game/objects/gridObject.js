@@ -1,4 +1,6 @@
-// Clase para utilidades de la cuadrícula
+import { FONT_VT323 } from '../config/fonts';
+
+
 export class GridObject {
     constructor(scene, cols) {
         this.scene = scene;
@@ -8,17 +10,16 @@ export class GridObject {
     }
 
     createGrid() {
-        this.gridCells = [];
         for (let i = 0; i < this.cols; i++) {
             const x = i * this.colWidth + this.colWidth / 2;
             this.gridCells.push({ x, col: i });
-            const text = this.scene.add.text(x, this.scene.sys.game.config.height - 20, (i + 1).toString(), {
-                font: '18px Arial',
-                color: '#cccccc',
-                align: 'center'
-            });
+            const text = this.scene.add.text(
+                x,
+                this.scene.sys.game.config.height - 60, (i + 1).toString(),
+                FONT_VT323);
             text.setOrigin(0.5, 0.5);
         }
+
         const graphics = this.scene.add.graphics();
         graphics.lineStyle(1, 0xcccccc, 0.3);
         for (let i = 1; i < this.cols; i++) {
