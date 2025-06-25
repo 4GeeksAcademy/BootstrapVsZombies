@@ -11,10 +11,10 @@ export class GridObject {
 
     createGrid() {
         for (let i = 0; i < this.cols; i++) {
-            const x = i * this.colWidth + this.colWidth / 2;
-            this.gridCells.push({ x, col: i });
+            const colCenterX = i * this.colWidth + this.colWidth / 2;
+            this.gridCells.push({ x: colCenterX, col: i });
             const text = this.scene.add.text(
-                x,
+                colCenterX,
                 this.scene.sys.game.config.height - 20, (i + 1).toString(),
                 FONT_VT323);
             text.setOrigin(0.5, 0.5);
@@ -23,16 +23,16 @@ export class GridObject {
         const graphics = this.scene.add.graphics();
         graphics.lineStyle(1, 0xcccccc, 0.3);
         for (let i = 1; i < this.cols; i++) {
-            const x = i * this.colWidth;
+            const colLineX = i * this.colWidth;
             const dashLength = 8;
             const gapLength = 8;
-            let y = 0;
-            while (y < this.scene.sys.game.config.height) {
+            let currentY = 0;
+            while (currentY < this.scene.sys.game.config.height) {
                 graphics.beginPath();
-                graphics.moveTo(x, y);
-                graphics.lineTo(x, y + dashLength);
+                graphics.moveTo(colLineX, currentY);
+                graphics.lineTo(colLineX, currentY + dashLength);
                 graphics.strokePath();
-                y += dashLength + gapLength;
+                currentY += dashLength + gapLength;
             }
         }
         // Guarda las celdas en la escena si se requiere compatibilidad

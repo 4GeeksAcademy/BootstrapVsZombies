@@ -12,7 +12,10 @@ export class MainMenu extends Scene
 
     create ()
     {
-        this.add.image(512, 384, 'background');
+        // Agrega la imagen de fondo y la ajusta al tamaño de la escena
+        const bg = this.add.image(0, 0, 'background').setOrigin(0);
+        bg.displayWidth = this.sys.game.config.width;
+        bg.displayHeight = this.sys.game.config.height;
 
         this.add.text(512, 700, '4geeks', {
             fontFamily: 'Arial Black', fontSize: 38, color: '#ffffff',
