@@ -11,7 +11,7 @@ export class ServerObject {
         this.servers = [];
         for (let i = 0; i < this.scene.gridCells.length; i++) {
             const colData = this.scene.gridCells[i];
-            const serverY = 30; 
+            const serverY = 40; 
             const server = this.scene.add.image(colData.x, serverY, 'server');
             server.setDisplaySize(55, 55);
             server.setData('health', this.health);
@@ -20,13 +20,13 @@ export class ServerObject {
             // Crear barra de vida
             const barBg = this.scene.add.graphics();
             barBg.fillStyle(0x222222, 1);
-            barBg.fillRect(server.x - 27, server.y -23, 54, 8);
+            barBg.fillRect(server.x - 27, server.y -37, 54, 8);
             barBg.setDepth(3);
             const bar = this.scene.add.graphics();
             bar.setDepth(4);
             this.drawHealthBar(bar, server.getData('health'));
             bar.x = server.x - 27;
-            bar.y = server.y - 23;
+            bar.y = server.y - 37;
             server.healthBar = bar;
             server.healthBarBg = barBg;
             this.servers.push(server);
