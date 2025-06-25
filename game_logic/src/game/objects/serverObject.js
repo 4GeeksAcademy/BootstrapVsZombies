@@ -21,4 +21,19 @@ export class ServerObject {
         }
         this.scene.servers = this.servers;
     }
+
+    receiveDamage(server, amount) {
+        let health = server.getData('health');
+        health -= amount;
+        server.setData('health', health);
+        if (health <= 0) {
+            this.destroyServer(server);
+        }
+    }
+
+    destroyServer(server) {
+        server.destroy();
+        this.servers = this.servers.filter(s => s !== server);
+        this.scene.servers = this.servers;
+    }
 }
