@@ -16,7 +16,7 @@ export class Game extends Phaser.Scene {
         this.grid = new GridObject(this, 12);
         this.grid.createGrid();
 
-        this.server = new ServerObject(this);
+        this.server = new ServerObject(this, 10, 3, [2, 4, 5, 7, 10, 12]);
         this.server.createServers();
 
         this.zombies = this.physics.add.group(); // Crea el grupo ANTES de usarlo

@@ -1,22 +1,33 @@
 // Clase para crear y gestionar los "servers" que las torretas defienden
 export class ServerObject {
-    constructor(scene, health = 50) {
+    constructor(scene, health = 50, serverCount = 1, serverColumns = null) {
         this.scene = scene;
         this.health = health;
+        this.serverCount = serverCount;
+        this.serverColumns = serverColumns; // Array de índices de columna, o null para automático
         this.servers = [];
     }
 
     createServers() {
         if (!this.scene.gridCells || this.scene.gridCells.length === 0) return;
         this.servers = [];
-        for (let i = 0; i < this.scene.gridCells.length; i++) {
-            const colData = this.scene.gridCells[i];
+        let columnsToUse = [];
+        if (Array.isArray(this.serverColumns) && this.serverColumns.length > 0) {
+            columnsToUse = this.serverColumns;
+        } else {
+            // Si no se especifican columnas, usar las primeras serverCount columnas
+            columnsToUse = Array.from({length: this.serverCount}, (_, i) => i);
+        }
+        for (let idx = 0; idx < columnsToUse.length; idx++) {
+            const colIndex = columnsToUse[idx] - 1;
+            if (!this.scene.gridCells[colIndex]) continue;
+            const colData = this.scene.gridCells[colIndex];
             const serverY = 40; 
             const server = this.scene.add.image(colData.x, serverY, 'server');
             server.setDisplaySize(55, 55);
             server.setData('health', this.health);
             server.setDepth(2);
-            server.setData('col', i);
+            server.setData('col', colIndex);
             // Crear barra de vida
             const barBg = this.scene.add.graphics();
             barBg.fillStyle(0x222222, 1);
