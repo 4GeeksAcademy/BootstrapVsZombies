@@ -10,7 +10,6 @@ export class MainMenu extends Scene {
     }
 
     create() {
-        // Agrega la imagen de fondo y la ajusta al tamaño de la escena
         const bg = this.add.image(0, 0, 'background').setOrigin(0);
         bg.displayWidth = this.sys.game.config.width;
         bg.displayHeight = this.sys.game.config.height;

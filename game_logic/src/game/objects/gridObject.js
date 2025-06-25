@@ -1,6 +1,5 @@
 import { FONT_VT323 } from '../config/fonts';
 
-
 export class GridObject {
     constructor(scene, cols) {
         this.scene = scene;
@@ -10,6 +9,8 @@ export class GridObject {
     }
 
     createGrid() {
+
+        //crea los textos  de numeros de columnas
         for (let i = 0; i < this.cols; i++) {
             const colCenterX = i * this.colWidth + this.colWidth / 2;
             this.gridCells.push({ x: colCenterX, col: i });
@@ -20,8 +21,9 @@ export class GridObject {
             text.setOrigin(0.5, 0.5);
         }
 
+        // crea las lineas de separación de las columnas
         const graphics = this.scene.add.graphics();
-        graphics.lineStyle(1, 0xcccccc, 0.3);
+        graphics.lineStyle(3, 0xcccccc, 0.3);
         for (let i = 1; i < this.cols; i++) {
             const colLineX = i * this.colWidth;
             const dashLength = 8;
@@ -35,7 +37,7 @@ export class GridObject {
                 currentY += dashLength + gapLength;
             }
         }
-        // Guarda las celdas en la escena si se requiere compatibilidad
+
         this.scene.gridCells = this.gridCells;
     }
 }
