@@ -1,120 +1,34 @@
 import Phaser from 'phaser';
-import { createGrid } from '../utils/gridUtils';
-import { createTurrets } from '../utils/turretUtils';
-import { fireBullet } from '../utils/bulletUtils';
-import { createZombies } from '../utils/zombieUtils';
-import { handleZombieHit } from '../utils/effectsUtils';
-import { createServers } from '../utils/serverUtils';
+import { GridObject } from '../objects/gridObject';
+import { ZombieObject } from '../objects/zombieObject';
 import { EventBus } from '../EventBus';
 
 export class Game extends Phaser.Scene {
     constructor() {
         super({ key: 'Game' });
-        // Lista de etiquetas HTML para "balas"
-        this.htmlTags = ['p', 'h5', 'h4', 'h3', 'h2', 'h1'];
-        // Daño correspondiente a cada tag
-        this.tagDamage = {
-            'p': 1,
-            'h5': 2,
-            'h4': 3,
-            'h3': 5,
-            'h2': 10,
-            'h1': 15
-        };
-        // Probabilidades ponderadas (más probabilidad para menor daño)
-        this.tagWeights = [0.6, 0.12, 0.08, 0.8, 0.07, 0.05];
     }
 
     create() {
         this.cameras.main.setBackgroundColor('#1c1f2b');
         this.physics.resume();
-        this.turretConfig = { numTurrets: 3, selectedRows: [0, 1, 2] };
-        EventBus.on('turret-config', (config) => {
-            this.turretConfig = config;
-            if (this.turrets) {
-                this.turrets.clear(true, true);
-            }
-            createTurrets(this, { cols: config.selectedRows });
-        });
-        createGrid(this);
-        createTurrets(this, { cols: this.turretConfig.selectedRows });
-        createServers(this); // Agrega los servers encima de las torretas
-        this.zombies = this.physics.add.group();
-        createZombies(this);
-        this.bullets = this.physics.add.group();
 
-        this.explosionEmitter = this.add.particles(0, 0, 'bullet', {
-            speed: { min: -200, max: 200 },
-            lifespan: 300,
-            scale: { start: 0.4, end: 0 },
-            blendMode: 'ADD',
-            gravityY: 200,
-            quantity: 0,
-            on: false
-        });
-        this.explosionEmitter.setDepth(10);
+        this.grid = new GridObject(this, 8);
+        this.grid.createGrid();
 
-        this.kills = 0;
-        this.killText = this.add.text(10, 20, 'Zombies eliminados: 0', {
-            fontSize: '18px',
-            fill: '#ffffff'
-        });
-
-
-        this.time.addEvent({
-            delay: 2000,
-            callback: () => {
-                this.turrets.children.iterate((turret) => {
-                    const turretCol = turret.getData('col');
-                    const zombiesInCol = this.zombies.getChildren().filter(zombie => zombie.getData('col') === turretCol);
-                    if (zombiesInCol.length > 0) {
-                        fireBullet(this, turret, this.htmlTags, this.tagDamage, this.tagWeights);
-                    }
-                });
-            },
-            loop: true
-        });
-
-
+        //this.zombies = this.physics.add.group();
+        //createZombies(this);
     }
 
     update() {
-        this.physics.add.overlap(this.bullets, this.zombies, (bullet, zombie) => {
-            handleZombieHit(this, bullet, zombie);
-        }, null, this);
-        this.bullets.children.iterate((bullet) => {
-            if (bullet && bullet.active) {
-                const velocityY = bullet.getData('velocityY') || 0;
-                bullet.y += velocityY * (this.game.loop.delta / 1000);
-                // Destruir si sale de la pantalla
-                if (bullet.y > this.sys.game.config.height) {
-                    const emitter = bullet.getData('rocketEmitter');
-                    if (emitter) emitter.destroy();
-                    bullet.destroy();
-                }
-            }
-        });
-                // Colisión entre zombies y torretas
-        this.physics.add.overlap(this.zombies, this.turrets, (zombie, turret) => {
-            const damage = zombie.getData('damage') || 10;
-            let health = turret.getData('health') || 100;
-            health -= damage;
-            console.log(health)
-            turret.setData('health', health);
-            zombie.destroy();
-            if (health <= 0) {
-                turret.destroy();
-            } // El zombie también se destruye al colisionar
-        });
-        this.time.addEvent({
-            delay: 3000,
-            callback: () => {
-                if (this.zombies.getChildren().length < 10) {
-                    createZombies(this);
-                }
-            },
-            loop: true
-        });
+        /*         this.time.addEvent({
+                    delay: 3000,
+                    callback: () => {
+                        if (this.zombies.getChildren().length < 10) {
+                            createZombies(this);
+                        }
+                    },
+                    loop: true
+                }); */
     }
 
 
