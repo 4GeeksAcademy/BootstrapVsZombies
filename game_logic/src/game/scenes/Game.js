@@ -12,7 +12,7 @@ export class Game extends Phaser.Scene {
         this.cameras.main.setBackgroundColor('#1c1f2b');
         this.physics.resume();
 
-        this.grid = new GridObject(this, 8);
+        this.grid = new GridObject(this, 12);
         this.grid.createGrid();
 
         //this.zombies = this.physics.add.group();

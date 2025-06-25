@@ -15,7 +15,7 @@ export class GridObject {
             this.gridCells.push({ x, col: i });
             const text = this.scene.add.text(
                 x,
-                this.scene.sys.game.config.height - 60, (i + 1).toString(),
+                this.scene.sys.game.config.height - 20, (i + 1).toString(),
                 FONT_VT323);
             text.setOrigin(0.5, 0.5);
         }
