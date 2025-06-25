@@ -20,7 +20,7 @@ export class ServerObject {
             // Crear barra de vida
             const barBg = this.scene.add.graphics();
             barBg.fillStyle(0x222222, 1);
-            barBg.fillRect(server.x - 27, server.y + 200, 54, 8);
+            barBg.fillRect(server.x - 27, server.y -23, 54, 8);
             barBg.setDepth(3);
             const bar = this.scene.add.graphics();
             bar.setDepth(4);
