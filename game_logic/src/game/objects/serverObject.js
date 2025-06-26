@@ -16,33 +16,28 @@ export class ServerObject {
             columnsToUse = this.serverColumns;
         } else {
             // Si no se especifican columnas, usar las primeras serverCount columnas
-            columnsToUse = Array.from({length: this.serverCount}, (_, i) => i);
+            columnsToUse = Array.from({ length: this.serverCount }, (_, i) => i);
         }
         for (let idx = 0; idx < columnsToUse.length; idx++) {
             const colIndex = columnsToUse[idx] - 1;
             if (!this.scene.gridCells[colIndex]) continue;
             const colData = this.scene.gridCells[colIndex];
-            const serverY = 40; 
+            const serverY = 40;
             const server = this.scene.physics.add.image(colData.x, serverY, 'server');
             server.setDisplaySize(55, 55);
-            server.body.setSize(55, 55); 
-            server.body.setImmovable(true); 
+            server.body.setSize(55, 55);
+            server.body.setImmovable(true);
             server.body.setAllowGravity(false);
             server.setData('health', this.health);
             server.setDepth(2);
             server.setData('col', colIndex);
             // Crear barra de vida
-            const barBg = this.scene.add.graphics();
-            barBg.fillStyle(0x222222, 1);
-            barBg.fillRect(server.x - 27, server.y -37, 54, 8);
-            barBg.setDepth(3);
             const bar = this.scene.add.graphics();
-            bar.setDepth(4);
+            bar.setDepth(3);
             this.drawHealthBar(bar, server.getData('health'));
             bar.x = server.x - 27;
             bar.y = server.y - 37;
             server.healthBar = bar;
-            server.healthBarBg = barBg;
             this.servers.push(server);
         }
         this.scene.servers = this.servers;
@@ -52,20 +47,16 @@ export class ServerObject {
         bar.clear();
         const percent = Phaser.Math.Clamp(health / this.health, 0, 1);
         bar.fillStyle(0x00ff00, 1);
-        bar.fillRect(0, 0, 54 * percent, 8);
-        if (percent < 0.4) {
-            bar.fillStyle(0xff0000, 1);
-            bar.fillRect(54 * percent, 0, 54 * (1 - percent), 8);
-        }
+        bar.fillRect(0, 0, 54 * percent, 5);
+        bar.fillStyle(0xff0000, 1);
+        bar.fillRect(54 * percent, 0, 54 * (1 - percent), 5);
     }
 
     receiveDamage(scene, server, amount) {
-        console.log("receiveDamage ejecutado", amount)
         let health = Number(server.getData('health'));
         const damage = amount;
         health -= damage;
         server.setData('health', health);
-        console.log('Health después del daño:', health);
         // Actualizar barra de vida
         if (server.healthBar) {
             this.drawHealthBar(server.healthBar, health);
@@ -76,8 +67,7 @@ export class ServerObject {
     }
 
     destroyServer(server) {
-        if (server.healthBar) server.healthBar.destroy();
-        if (server.healthBarBg) server.healthBarBg.destroy();
+        server.healthBar.destroy();
         server.destroy();
         this.servers = this.servers.filter(s => s !== server);
         this.scene.servers = this.servers;

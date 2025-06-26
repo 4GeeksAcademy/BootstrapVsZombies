@@ -24,11 +24,10 @@ export class Game extends Phaser.Scene {
         this.zombieManager.createZombie();
 
                 // --- COLISIÓN ZOMBIE-SERVER ---
-        this.physics.add.overlap(
+        this.physics.add.collider(
             this.zombies,
             this.server.servers,
             (server, zombie) => {
-                console.log(zombie.getData('damage'))
                 this.server.receiveDamage(this, server, Number(zombie.getData('damage')));
                 zombie.destroy();
             },
