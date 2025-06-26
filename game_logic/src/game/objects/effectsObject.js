@@ -4,6 +4,13 @@ export class EffectsObjects {
         this.scene = scene;
     }
 
+    resetEmitters() {
+        this.scene.bloodEmitter = null;
+        this.scene.sparkEmitter = null;
+        this.scene.explosionFireEmitter = null;
+        this.scene.explosionEmitter = null;
+    }
+
     handleZombieHit(bullet, zombie) {
         const emitter = bullet.getData('rocketEmitter');
         if (emitter) emitter.destroy();

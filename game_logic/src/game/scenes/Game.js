@@ -13,8 +13,8 @@ export class Game extends Phaser.Scene {
         super({ key: 'Game' });
     }
 
-    create() {
-        // Selecciona el nivel actual (puedes cambiar el índice para otros niveles)
+    create() {        
+
         this.level = levels[0];
 
         this.cameras.main.setBackgroundColor('#1c1f2b');
@@ -35,6 +35,7 @@ export class Game extends Phaser.Scene {
 
         this.bulletManager = new BulletObject(this);
         this.effects = new EffectsObjects(this);
+        this.effects.resetEmitters();
 
         // --- COLISIÓN ZOMBIE-SERVER ---
         this.physics.add.collider(
