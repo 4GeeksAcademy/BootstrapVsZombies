@@ -7,9 +7,8 @@ export class BulletObject {
     }
 
     fireBullet(turret, damage = 100, velocityY = 100) {
-        // Crear la bala como sprite o imagen, no texto ni tags
         const bullet = this.scene.physics.add.image(turret.x, turret.y + 25, 'bullet');
-        bullet.setDisplaySize(16, 16);
+        bullet.setDisplaySize(16, 20);
         bullet.body.setAllowGravity(false);
         bullet.setData('damage', damage);
         bullet.setActive(true);
@@ -17,7 +16,7 @@ export class BulletObject {
         this.bullets.add(bullet);
         bullet.setVelocityY(velocityY);
         // Efecto de partículas opcional
-        const rocketEmitter = this.scene.add.particles(0, 0, 'bullet', {
+        const rocketEmitter = this.scene.add.particles(0, -13, 'bullet', {
             speed: { min: 10, max: 30 },
             angle: { min: 260, max: 280 },
             scale: { start: 0.20, end: 0 },
