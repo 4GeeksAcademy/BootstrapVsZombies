@@ -43,10 +43,10 @@ export class TurretObject {
         const percent = Phaser.Math.Clamp(health / this.health, 0, 1);
         // Barra verde (vida restante)
         bar.fillStyle(0x00ff00, 1);
-        bar.fillRect(0, 48 * (1 - percent), 6, 48 * percent);
+        bar.fillRect(0, 48 * (1 - percent), 4, 48 * percent);
         // Barra roja (vida perdida)
         bar.fillStyle(0xff0000, 1);
-        bar.fillRect(0, 0, 6, 48 * (1 - percent));
+        bar.fillRect(0, 0, 4, 48 * (1 - percent));
     }
 
     receiveDamage(scene, turret, amount) {

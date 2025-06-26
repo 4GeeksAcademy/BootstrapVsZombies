@@ -49,7 +49,7 @@ export class Game extends Phaser.Scene {
             this.zombies,
             this.turret.turrets,
             (turret, zombie) => {
-                this.effects.bloodEmitter(zombie);
+                this.effects.bloodEmitter(zombie, 0, -15);
                 this.effects.explosionFireEmitter(turret);
                 this.turret.receiveDamage(this, turret, Number(zombie.getData('damage')));
                 zombie.destroy();
