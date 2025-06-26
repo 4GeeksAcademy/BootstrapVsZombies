@@ -21,4 +21,13 @@ export class ZombieObject {
         zombie.setVelocityY(-200);
         return zombie;
     }
+
+    receiveDamage(zombie, amount) {
+        let health = Number(zombie.getData('health'));
+        health -= amount;
+        zombie.setData('health', health);
+        if (health <= 0) {
+            zombie.destroy();
+        }
+    }
 }
