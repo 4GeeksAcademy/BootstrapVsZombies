@@ -36,4 +36,23 @@ export class EffectsObjects {
             this.scene.explosionEmitter.explode(5, zombie.x, zombie.y);
         }
     }
+
+    sparkEmitter(target, x = 0, y = 0) {
+        // Efecto de chispas al colisionar, recibe un target y desfasamiento de posición del efecto
+        if (!this.scene.sparkEmitter) {
+            this.scene.sparkEmitter = this.scene.add.particles(0, 0, 'spark', {
+                speed: { min: 100, max: 150 },
+                angle: { min: 240, max: 300 },
+                lifespan: 600,
+                quantity: 0,
+                scale: { start: 0.3, end: 0 },
+                alpha: { start: 1, end: 0 },
+                tint: 0xffff00,
+                on: false,
+            });
+            this.scene.sparkEmitter.setDepth(4);
+        }
+        // Explota chispas en la posición de la colisión
+        this.scene.sparkEmitter.explode(10, target.x + x, target.y + y);
+    }
 }

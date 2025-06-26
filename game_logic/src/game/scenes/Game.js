@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { GridObject } from '../objects/gridObject';
 import { ServerObject } from '../objects/serverObject';
 import { ZombieObject } from '../objects/zombieObject';
+import { EffectsObjects } from '../objects/effectsObject';
 import { EventBus } from '../EventBus';
 
 export class Game extends Phaser.Scene {
@@ -23,11 +24,15 @@ export class Game extends Phaser.Scene {
         this.zombieManager = new ZombieObject(this);
         this.zombieManager.createZombie();
 
-                // --- COLISIÓN ZOMBIE-SERVER ---
+        // Instanciar efectos visuales
+        this.effects = new EffectsObjects(this);
+
+        // --- COLISIÓN ZOMBIE-SERVER ---
         this.physics.add.collider(
             this.zombies,
             this.server.servers,
             (server, zombie) => {
+                this.effects.sparkEmitter(server);
                 this.server.receiveDamage(this, server, Number(zombie.getData('damage')));
                 zombie.destroy();
             },
