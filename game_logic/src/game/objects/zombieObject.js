@@ -18,7 +18,7 @@ export class ZombieObject {
         zombie.setData('col', col);
         zombie.setData('damage', 30); // Daño que causa el zombie al colisionar
         this.zombies.add(zombie);
-        zombie.setVelocityY(-20);
+        zombie.setVelocityY(-200);
         return zombie;
     }
 }

@@ -16,15 +16,30 @@ export class Game extends Phaser.Scene {
         this.grid = new GridObject(this, 12);
         this.grid.createGrid();
 
-        this.server = new ServerObject(this, 10, 3, [2, 4, 5, 7, 10, 12]);
+        this.server = new ServerObject(this, 100, 12, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
         this.server.createServers();
 
-        this.zombies = this.physics.add.group(); // Crea el grupo ANTES de usarlo
-        this.zombieManager = new ZombieObject(this); // Instancia el manejador de zombies
-        this.zombieManager.createZombie(); // Crea un zombie usando el grupo
+        this.zombies = this.physics.add.group();
+        this.zombieManager = new ZombieObject(this);
+        this.zombieManager.createZombie();
+
+                // --- COLISIÓN ZOMBIE-SERVER ---
+        this.physics.add.overlap(
+            this.zombies,
+            this.server.servers,
+            (server, zombie) => {
+                console.log(zombie.getData('damage'))
+                this.server.receiveDamage(this, server, Number(zombie.getData('damage')));
+                zombie.destroy();
+            },
+            null,
+            this
+        );
+
     }
 
     update() {
+
         this.time.addEvent({
             delay: 3000,
             callback: () => {

@@ -23,8 +23,11 @@ export class ServerObject {
             if (!this.scene.gridCells[colIndex]) continue;
             const colData = this.scene.gridCells[colIndex];
             const serverY = 40; 
-            const server = this.scene.add.image(colData.x, serverY, 'server');
+            const server = this.scene.physics.add.image(colData.x, serverY, 'server');
             server.setDisplaySize(55, 55);
+            server.body.setSize(55, 55); 
+            server.body.setImmovable(true); 
+            server.body.setAllowGravity(false);
             server.setData('health', this.health);
             server.setDepth(2);
             server.setData('col', colIndex);
@@ -56,10 +59,13 @@ export class ServerObject {
         }
     }
 
-    receiveDamage(server, amount) {
-        let health = server.getData('health');
-        health -= amount;
+    receiveDamage(scene, server, amount) {
+        console.log("receiveDamage ejecutado", amount)
+        let health = Number(server.getData('health'));
+        const damage = amount;
+        health -= damage;
         server.setData('health', health);
+        console.log('Health después del daño:', health);
         // Actualizar barra de vida
         if (server.healthBar) {
             this.drawHealthBar(server.healthBar, health);
