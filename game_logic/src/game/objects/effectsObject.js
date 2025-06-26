@@ -56,7 +56,7 @@ export class EffectsObjects {
         this.scene.sparkEmitter.explode(10, target.x + x, target.y + y);
     }
 
-        bloodEmitter(target, x = 0, y = 0) {
+    bloodEmitter(target, x = 0, y = 0) {
         // Efecto de sangre al colisionar, recibe un target y desfasamiento de posición del efecto
         if (!this.scene.bloodEmitter) {
             this.scene.bloodEmitter = this.scene.add.particles(0, 0, 'blood', {
@@ -73,5 +73,24 @@ export class EffectsObjects {
         }
         // Explota sangre en la posición de la colisión
         this.scene.bloodEmitter.explode(10, target.x + x, target.y + y);
+    }
+
+    explosionFireEmitter(target, x = 0, y = 0) {
+        // Efecto de sangre al colisionar, recibe un target y desfasamiento de posición del efecto
+        if (!this.scene.explosionFireEmitter) {
+            this.scene.explosionFireEmitter = this.scene.add.particles(0, 0, 'explosion_fire', {
+                speed: { min: 1, max: 25 },
+                angle: { min: 0, max: 360 },
+                lifespan: 1500,
+                quantity: 0,
+                scale: { start: 0.3, end: 0 },
+                alpha: { start: 1, end: 0 },
+                tint: 0xffff00,
+                on: false,
+            });
+            this.scene.explosionFireEmitter.setDepth(4);
+        }
+        // Explota sangre en la posición de la colisión
+        this.scene.explosionFireEmitter.explode(3, target.x + x, target.y + y);
     }
 }

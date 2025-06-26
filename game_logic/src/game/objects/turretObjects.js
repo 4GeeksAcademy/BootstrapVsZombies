@@ -20,7 +20,7 @@ export class TurretObject {
             columnsToUse = Array.from({ length: this.turretCount }, (_, i) => i);
         }
         for (let idx = 0; idx < columnsToUse.length; idx++) {
-            const colIndex = columnsToUse[idx];
+            const colIndex = columnsToUse[idx] - 1;
             const x = colIndex * colWidth + colWidth / 2;
             const turret = this.scene.physics.add.image(x, turretY, 'turret_vsc').setDisplaySize(50, 50);
             turret.setImmovable(true);

@@ -28,7 +28,6 @@ export class Game extends Phaser.Scene {
         this.turret = new TurretObject(this, 100, 8, [1, 2, 3, 4, 5, 6, 7, 8])
         this.turret.createTurrets();
 
-        // Instanciar efectos visuales
         this.effects = new EffectsObjects(this);
 
         // --- COLISIÓN ZOMBIE-SERVER ---
@@ -39,6 +38,20 @@ export class Game extends Phaser.Scene {
                 this.effects.bloodEmitter(zombie);
                 this.effects.sparkEmitter(server);
                 this.server.receiveDamage(this, server, Number(zombie.getData('damage')));
+                zombie.destroy();
+            },
+            null,
+            this
+        );
+
+                // --- COLISIÓN ZOMBIE-TURRET ---
+        this.physics.add.collider(
+            this.zombies,
+            this.turret.turrets,
+            (turret, zombie) => {
+                this.effects.bloodEmitter(zombie);
+                this.effects.explosionFireEmitter(turret);
+                this.turret.receiveDamage(this, turret, Number(zombie.getData('damage')));
                 zombie.destroy();
             },
             null,
