@@ -5,7 +5,7 @@ export class ZombieObject {
     }
 
     createZombie() {
-        const cols = 12;
+        const cols = this.scene.gridCells.length;
         const colWidth = this.scene.sys.game.config.width / cols;
         const zombieY = 600;
         const col = Phaser.Math.Between(0, cols - 1);

@@ -3,6 +3,7 @@ import { GridObject } from '../objects/gridObject';
 import { ServerObject } from '../objects/serverObject';
 import { ZombieObject } from '../objects/zombieObject';
 import { EffectsObjects } from '../objects/effectsObject';
+import { TurretObject } from '../objects/turretObjects';
 import { EventBus } from '../EventBus';
 
 export class Game extends Phaser.Scene {
@@ -14,15 +15,18 @@ export class Game extends Phaser.Scene {
         this.cameras.main.setBackgroundColor('#1c1f2b');
         this.physics.resume();
 
-        this.grid = new GridObject(this, 12);
+        this.grid = new GridObject(this, 8);
         this.grid.createGrid();
 
-        this.server = new ServerObject(this, 100, 12, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
+        this.server = new ServerObject(this, 100, 8, [1, 2, 3, 4, 5, 6, 7, 8]);
         this.server.createServers();
 
         this.zombies = this.physics.add.group();
         this.zombieManager = new ZombieObject(this);
         this.zombieManager.createZombie();
+
+        this.turret = new TurretObject(this, 100, 8, [1, 2, 3, 4, 5, 6, 7, 8])
+        this.turret.createTurrets();
 
         // Instanciar efectos visuales
         this.effects = new EffectsObjects(this);
