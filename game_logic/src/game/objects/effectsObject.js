@@ -57,7 +57,7 @@ export class EffectsObjects {
     }
 
         bloodEmitter(target, x = 0, y = 0) {
-        // Efecto de chispas al colisionar, recibe un target y desfasamiento de posición del efecto
+        // Efecto de sangre al colisionar, recibe un target y desfasamiento de posición del efecto
         if (!this.scene.bloodEmitter) {
             this.scene.bloodEmitter = this.scene.add.particles(0, 0, 'blood', {
                 speed: { min: 1, max: 25 },
@@ -71,7 +71,7 @@ export class EffectsObjects {
             });
             this.scene.bloodEmitter.setDepth(4);
         }
-        // Explota chispas en la posición de la colisión
-        this.scene.bloodEmitter.explode(6, target.x + x, target.y + y);
+        // Explota sangre en la posición de la colisión
+        this.scene.bloodEmitter.explode(10, target.x + x, target.y + y);
     }
 }
