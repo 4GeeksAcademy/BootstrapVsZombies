@@ -6,6 +6,7 @@ import { EffectsObjects } from '../objects/effectsObject';
 import { TurretObject } from '../objects/turretObject';
 import { EventBus } from '../EventBus';
 import { BulletObject } from '../objects/bulletObject';
+import { levels } from '../config/levels';
 
 export class Game extends Phaser.Scene {
     constructor() {
@@ -13,24 +14,26 @@ export class Game extends Phaser.Scene {
     }
 
     create() {
+        // Selecciona el nivel actual (puedes cambiar el índice para otros niveles)
+        this.level = levels[0];
+
         this.cameras.main.setBackgroundColor('#1c1f2b');
         this.physics.resume();
 
-        this.grid = new GridObject(this, 8);
+        this.grid = new GridObject(this, this.level.gridCols);
         this.grid.createGrid();
 
-        this.server = new ServerObject(this, 100, 8, [1, 2, 3, 4, 5, 6, 7, 8]);
+        this.server = new ServerObject(this, this.level.serverHealth, this.level.gridCols, this.level.serverCols);
         this.server.createServers();
 
         this.zombies = this.physics.add.group();
-        this.zombieManager = new ZombieObject(this);
+        this.zombieManager = new ZombieObject(this, this.level.zombieVelocityY, this.level.zombieHealth, this.level.zombieDamage);
         this.zombieManager.createZombie();
 
-        this.turret = new TurretObject(this, 100, 8, [1, 2, 3, 4, 5, 6, 7, 8])
+        this.turret = new TurretObject(this, this.level.turretHealth, this.level.gridCols, this.level.serverCols);
         this.turret.createTurrets();
 
         this.bulletManager = new BulletObject(this);
-
         this.effects = new EffectsObjects(this);
 
         // --- COLISIÓN ZOMBIE-SERVER ---
@@ -68,7 +71,7 @@ export class Game extends Phaser.Scene {
                     const turretCol = turret.getData('col');
                     const zombiesInCol = this.zombies.getChildren().filter(zombie => zombie.getData('col') === turretCol);
                     if (zombiesInCol.length > 0) {
-                        this.bulletManager.fireBullet(turret);
+                        this.bulletManager.fireBullet(turret, this.level.bulletDamage, this.level.bulletVelocityY);
                     }
                 });
             },
@@ -77,7 +80,7 @@ export class Game extends Phaser.Scene {
 
         // --- COLISIÓN BALA-ZOMBIE ---
         this.physics.add.overlap(this.bulletManager.bullets, this.zombies, (bullet, zombie) => {
-            const damage = bullet.getData('damage') || 10;
+            const damage = bullet.getData('damage');
             this.zombieManager.receiveDamage(zombie, damage);
             this.effects.bloodEmitter(zombie, 0, -10);
             const emitter = bullet.getData('rocketEmitter');
@@ -100,7 +103,7 @@ export class Game extends Phaser.Scene {
             delay: 3000,
             callback: () => {
                 if (this.zombies.getChildren().length < 10) {
-                    this.zombieManager.createZombie(-100);
+                    this.zombieManager.createZombie(this.level.zombieVelocityY, this.level.zombieHealth, this.level.zombieDamage);
                 }
             },
             loop: true

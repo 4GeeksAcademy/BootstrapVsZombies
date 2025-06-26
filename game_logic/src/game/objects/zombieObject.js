@@ -1,11 +1,13 @@
 export class ZombieObject {
-    constructor(scene, health = 200) {
+    constructor(scene, velocityY, health, damage) {
         this.scene = scene;
+        this.velocityY = velocityY;
         this.health = health;
+        this.damage = damage;
         this.zombies = scene.zombies;
     }
 
-    createZombie(velocityY = -100, healht = 200) {
+    createZombie(velocityY, healht, damage) {
         const cols = this.scene.gridCells.length;
         const colWidth = this.scene.sys.game.config.width / cols;
         const zombieY = 600;
@@ -15,9 +17,9 @@ export class ZombieObject {
             .setDisplaySize(40, 40)
             .setCollideWorldBounds(true);
         zombie.body.setAllowGravity(false);
-        zombie.setData('health', 200);
+        zombie.setData('health', healht);
         zombie.setData('col', col);
-        zombie.setData('damage', 30); // Daño que causa el zombie al colisionar
+        zombie.setData('damage', damage); // Daño que causa el zombie al colisionar
         this.zombies.add(zombie);
         zombie.setVelocityY(velocityY);
 
