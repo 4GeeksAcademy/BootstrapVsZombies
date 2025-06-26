@@ -88,6 +88,14 @@ export class Game extends Phaser.Scene {
 
     update() {
 
+        // Actualizar barras de vida de zombies
+        if (this.zombieUpdatables) {
+            this.zombieUpdatables = this.zombieUpdatables.filter(zombie => zombie.active);
+            this.zombieUpdatables.forEach(zombie => {
+                if (zombie.update) zombie.update();
+            });
+        }
+
         this.time.addEvent({
             delay: 3000,
             callback: () => {

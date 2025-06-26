@@ -47,9 +47,9 @@ export class ServerObject {
         bar.clear();
         const percent = Phaser.Math.Clamp(health / this.health, 0, 1);
         bar.fillStyle(0x00ff00, 1);
-        bar.fillRect(0, 0, 54 * percent, 5);
+        bar.fillRect(0, 0, 54 * percent, 4);
         bar.fillStyle(0xff0000, 1);
-        bar.fillRect(54 * percent, 0, 54 * (1 - percent), 5);
+        bar.fillRect(54 * percent, 0, 54 * (1 - percent), 4);
     }
 
     receiveDamage(scene, server, amount) {
