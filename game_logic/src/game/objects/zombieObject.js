@@ -46,7 +46,7 @@ export class ZombieObject {
 
     drawHealthBar(bar, health) {
         bar.clear();
-        const percent = Phaser.Math.Clamp(health / this.health , 0, 1);
+        const percent = Phaser.Math.Clamp(health / this.health, 0, 1);
         // Barra verde (vida restante)
         bar.fillStyle(0x00ff00, 1);
         bar.fillRect(0, 0, 40 * percent, 5);
@@ -64,7 +64,24 @@ export class ZombieObject {
             this.drawHealthBar(zombie.healthBar, health);
         }
         if (health <= 0) {
-            if (zombie.healthBar) zombie.healthBar.destroy();
+            this.destroyZombie(zombie);
+        }
+    }
+
+    destroyZombie(zombie) {
+        zombie.healthBar.destroy();
+        zombie.healthBar = null;
+        // Eliminar de la lista de actualizables
+        if (this.scene.zombieUpdatables) {
+            const idx = this.scene.zombieUpdatables.indexOf(zombie);
+            if (idx !== -1) this.scene.zombieUpdatables.splice(idx, 1);
+        }
+        // Eliminar del grupo de zombies
+        if (this.zombies && this.zombies.contains(zombie)) {
+            this.zombies.remove(zombie, true, true);
+        }
+        // Destruir sprite
+        if (zombie && zombie.destroy) {
             zombie.destroy();
         }
     }

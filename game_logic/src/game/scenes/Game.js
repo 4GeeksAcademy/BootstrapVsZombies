@@ -41,7 +41,7 @@ export class Game extends Phaser.Scene {
                 this.effects.bloodEmitter(zombie);
                 this.effects.sparkEmitter(server);
                 this.server.receiveDamage(this, server, Number(zombie.getData('damage')));
-                zombie.destroy();
+                this.zombieManager.destroyZombie(zombie);
             },
             null,
             this
@@ -54,7 +54,7 @@ export class Game extends Phaser.Scene {
                 this.effects.bloodEmitter(zombie, 0, -15);
                 this.effects.explosionFireEmitter(turret);
                 this.turret.receiveDamage(this, turret, Number(zombie.getData('damage')));
-                zombie.destroy();
+                this.zombieManager.destroyZombie(zombie);
             },
             null,
             this
