@@ -32,6 +32,7 @@ export class Game extends Phaser.Scene {
             this.zombies,
             this.server.servers,
             (server, zombie) => {
+                this.effects.bloodEmitter(zombie);
                 this.effects.sparkEmitter(server);
                 this.server.receiveDamage(this, server, Number(zombie.getData('damage')));
                 zombie.destroy();
