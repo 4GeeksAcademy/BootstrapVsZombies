@@ -92,7 +92,7 @@ export class Game extends Phaser.Scene {
             delay: 3000,
             callback: () => {
                 if (this.zombies.getChildren().length < 10) {
-                    this.zombieManager.createZombie();
+                    this.zombieManager.createZombie(-100);
                 }
             },
             loop: true

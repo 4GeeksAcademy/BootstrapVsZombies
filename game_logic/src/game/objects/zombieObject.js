@@ -4,7 +4,7 @@ export class ZombieObject {
         this.zombies = scene.zombies;
     }
 
-    createZombie() {
+    createZombie(velocityY = -100) {
         const cols = this.scene.gridCells.length;
         const colWidth = this.scene.sys.game.config.width / cols;
         const zombieY = 600;
@@ -18,7 +18,7 @@ export class ZombieObject {
         zombie.setData('col', col);
         zombie.setData('damage', 30); // Daño que causa el zombie al colisionar
         this.zombies.add(zombie);
-        zombie.setVelocityY(-100);
+        zombie.setVelocityY(velocityY);
         return zombie;
     }
 
