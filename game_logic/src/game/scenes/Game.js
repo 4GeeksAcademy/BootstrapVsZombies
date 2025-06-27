@@ -1,4 +1,12 @@
 import Phaser from 'phaser';
+import { GridObject } from '../objects/gridObject';
+import { ServerObject } from '../objects/serverObject';
+import { ZombieObject } from '../objects/zombieObject';
+import { EffectsObjects } from '../objects/effectsObject';
+import { TurretObject } from '../objects/turretObject';
+import { EventBus } from '../EventBus';
+import { BulletObject } from '../objects/bulletObject';
+import { levels } from '../config/levels';
 
 export class Game extends Phaser.Scene {
     constructor() {
@@ -6,64 +14,119 @@ export class Game extends Phaser.Scene {
     }
 
     create() {
+
+        this.level = levels[0];
+
         this.cameras.main.setBackgroundColor('#1c1f2b');
-        this.createGrid();
-        this.createTurrets();
+        this.physics.resume();
+
+        this.grid = new GridObject(this, this.level.gridCols);
+        this.grid.createGrid();
+
+        this.server = new ServerObject(this, this.level.serverHealth, this.level.gridCols, this.level.serverCols);
+        this.server.createServers();
+
+        this.zombies = this.physics.add.group();
+        this.zombieManager = new ZombieObject(this, this.level.zombieVelocityY, this.level.zombieHealth, this.level.zombieDamage);
+        this.zombieManager.createZombie();
+
+        this.turret = new TurretObject(this, this.level.turretHealth, this.level.gridCols, this.level.serverCols);
+        this.turret.createTurrets();
+
+        this.bulletManager = new BulletObject(this);
+        this.effects = new EffectsObjects(this);
+        this.effects.resetEmitters();
+
+        this.bgMusic = this.sound.add('closeEncounter4', {
+            loop: true,
+            volume: 0.8 // Ajusta el volumen entre 0 y 1
+        });
+        this.bgMusic.play();
+
+        // --- COLISIÓN ZOMBIE-SERVER ---
+        this.physics.add.collider(
+            this.zombies,
+            this.server.servers,
+            (server, zombie) => {
+                this.effects.bloodEmitter(zombie);
+                this.effects.sparkEmitter(server);
+                this.server.receiveDamage(this, server, Number(zombie.getData('damage')));
+                this.zombieManager.destroyZombie(zombie);
+                this.sound.play('zombieDead2');
+            },
+            null,
+            this
+        );
+        // --- COLISIÓN ZOMBIE-TURRET ---
+        this.physics.add.collider(
+            this.zombies,
+            this.turret.turrets,
+            (turret, zombie) => {
+                this.effects.bloodEmitter(zombie, 0, -15);
+                this.effects.explosionFireEmitter(turret);
+                this.turret.receiveDamage(this, turret, Number(zombie.getData('damage')));
+                this.zombieManager.destroyZombie(zombie);
+                this.sound.play('zombieDead2');
+            },
+            null,
+            this
+        );
+
+        // --- DISPARO AUTOMÁTICO DE TORRETAS ---
+        this.time.addEvent({
+            delay: 2000,
+            callback: () => {
+                this.turret.turrets.forEach((turret) => {
+                    const turretCol = turret.getData('col');
+                    const zombiesInCol = this.zombies.getChildren().filter(zombie => zombie.getData('col') === turretCol);
+                    if (zombiesInCol.length > 0) {
+                        this.bulletManager.fireBullet(this, turret, this.level.bulletDamage, this.level.bulletVelocityY);
+                    }
+                });
+            },
+            loop: true
+        });
+
+        // --- COLISIÓN BALA-ZOMBIE ---
+        this.physics.add.overlap(this.bulletManager.bullets, this.zombies, (bullet, zombie) => {
+            const damage = bullet.getData('damage');
+            this.zombieManager.receiveDamage(this, zombie, damage);
+            const emitter = bullet.getData('rocketEmitter');
+            if (emitter) emitter.destroy();
+            bullet.destroy();
+        }, null, this);
     }
 
-    createTurrets() {
-        const cols = 12;
-        const colWidth = this.sys.game.config.width / cols;
-        const turretY = 100;
+    update() {
 
-        this.turrets = this.physics.add.group();
-
-        for (let i = 0; i < cols; i++) {
-            const x = i * colWidth + colWidth / 2;
-            const turret = this.physics.add.image(x, turretY, 'turret').setDisplaySize(50, 50);
-
-            turret.setImmovable(true); // No reacciona a colisiones
-            turret.setData('col', i);  // Para lógica futura (qué columna defiende)
-
-            this.turrets.add(turret);
-        }
-    }
-
-    createGrid() {
-        const cols = 12;
-        const rowHeight = 64;
-        const colWidth = this.sys.game.config.width / cols;
-        const defenseY = 100;
-
-        this.gridCells = [];
-
-        // Dibujar celdas rectangulares (fila superior)
-        for (let i = 0; i < cols; i++) {
-            const x = i * colWidth + colWidth / 2;
-
-            const cell = this.add.rectangle(x, defenseY, colWidth - 4, rowHeight - 4, 0x4db8ff, 0.2);
-            cell.setStrokeStyle(2, 0xcccccc, 0.4);
-            cell.setData('col', i);
-            this.gridCells.push(cell);
+        // Actualizar barras de vida de zombies
+        if (this.zombieUpdatables) {
+            this.zombieUpdatables = this.zombieUpdatables.filter(zombie => zombie.active);
+            this.zombieUpdatables.forEach(zombie => {
+                if (zombie.update) zombie.update();
+            });
         }
 
-        // Dibujar líneas punteadas entre columnas
-        const graphics = this.add.graphics();
-        graphics.lineStyle(1, 0xcccccc, 0.3); // Gris claro, semi transparente
-
-        for (let i = 1; i < cols; i++) {
-            const x = i * colWidth;
-            const dashLength = 8;
-            const gapLength = 8;
-            let y = 0;
-
-            while (y < this.sys.game.config.height) {
-                graphics.beginPath();
-                graphics.moveTo(x, y);
-                graphics.lineTo(x, y + dashLength);
-                graphics.strokePath();
-                y += dashLength + gapLength;
+        this.time.addEvent({
+            delay: 3000,
+            callback: () => {
+                if (this.zombies.getChildren().length < 10) {
+                    this.zombieManager.createZombie(this.level.zombieVelocityY, this.level.zombieHealth, this.level.zombieDamage);
+                }
+            },
+            loop: true
+        });
+        // Mover y destruir balas fuera de pantalla
+        this.bulletManager.bullets.children.iterate((bullet) => {
+            if (bullet && bullet.active) {
+                if (bullet.y > this.sys.game.config.height) {
+                    const emitter = bullet.getData('rocketEmitter');
+                    if (emitter) emitter.destroy();
+                    bullet.destroy();
+                }
             }
-        }
+        });
     }
+
+
 }
