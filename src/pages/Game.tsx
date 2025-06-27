@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
@@ -12,9 +11,6 @@ import PhaserGame from '../components/PhaserGame';
 const Game: React.FC = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
-
-  //start
-
   const phaserRef = useRef(null);
   const changeScene = () => {
 
@@ -25,11 +21,16 @@ const Game: React.FC = () => {
     }
   }
 
-  //end
-
   useEffect(() => {
     if (!loading && !user) {
       navigate('/login');
+    }
+    // Emitir el usuario a Phaser cuando esté disponible
+    if (user) {
+      // Lazy import para evitar problemas de SSR o duplicidad
+      import('../game/EventBus').then(({ EventBus, USER_EVENT }) => {
+        EventBus.emit(USER_EVENT, user);
+      });
     }
   }, [user, loading, navigate]);
 

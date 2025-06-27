@@ -1,6 +1,7 @@
 import { Scene } from 'phaser';
 import { audioAssets } from '../../../public/assets/sfx/audioAssets';
 import { imageAssets } from '../../../public/assets/images/imageAssets';
+import { EventBus, USER_EVENT } from '../EventBus';
 
 export class Preloader extends Scene {
     constructor() {
@@ -20,11 +21,11 @@ export class Preloader extends Scene {
 
         //  Use the 'progress' event emitted by the LoaderPlugin to update the loading bar
         this.load.on('progress', (progress) => {
-
             //  Update the progress bar (our bar is 464px wide, so 100% = 464px)
             bar.width = 4 + (460 * progress);
-
         });
+
+
     }
 
     preload() {
@@ -33,11 +34,16 @@ export class Preloader extends Scene {
 
         imageAssets.forEach(img => {
             this.load.image(img.key, img.path);
-            console.log(img.key, " y ", img.path)
         });
 
         audioAssets.forEach(audio => {
             this.load.audio(audio.key, audio.path);
+        });
+
+                // Escuchar el usuario y guardarlo en el registry global
+        EventBus.on(USER_EVENT, (user) => {
+            this.registry.set('user', user);
+             console.log('Usuario guardado en registry:', user);
         });
 
 
