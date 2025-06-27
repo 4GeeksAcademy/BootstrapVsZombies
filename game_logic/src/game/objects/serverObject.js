@@ -57,6 +57,7 @@ export class ServerObject {
         const damage = amount;
         health -= damage;
         server.setData('health', health);
+        this.scene.sound.play('hurt1')
         // Actualizar barra de vida
         if (server.healthBar) {
             this.drawHealthBar(server.healthBar, health);
