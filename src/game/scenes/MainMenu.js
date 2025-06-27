@@ -11,15 +11,20 @@ export class MainMenu extends Scene {
 
     create() {
 
+
         const bg = this.add.image(0, 0, 'background').setOrigin(0);
         bg.displayWidth = this.sys.game.config.width;
         bg.displayHeight = this.sys.game.config.height;
 
-        this.add.text(512, 500, '4Geeks', FONT_VT323).setDepth(100).setOrigin(0.5);
+        this.add.text(700, 550, '4Geeks', FONT_VT323).setDepth(100).setOrigin(0.5);
+
+        const user_obj = this.registry.get('user');
+        const user = user_obj?.user_metadata?.display_name || 'Invitado';
+        console.log(user)
+
+        this.add.text(384, 50, `Bienvenido ${user}`, FONT_VT323).setDepth(100).setOrigin(0.5);
 
         EventBus.emit('current-scene-ready', this);
-        
-        console.log("MainMenu: ", this.registry.get('user'))
 
     }
 
