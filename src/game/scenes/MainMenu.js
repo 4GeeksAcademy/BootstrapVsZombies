@@ -10,6 +10,7 @@ export class MainMenu extends Scene {
     }
 
     create() {
+
         const bg = this.add.image(0, 0, 'background').setOrigin(0);
         bg.displayWidth = this.sys.game.config.width;
         bg.displayHeight = this.sys.game.config.height;
@@ -17,6 +18,9 @@ export class MainMenu extends Scene {
         this.add.text(512, 500, '4Geeks', FONT_VT323).setDepth(100).setOrigin(0.5);
 
         EventBus.emit('current-scene-ready', this);
+        
+        console.log("MainMenu: ", this.registry.get('user'))
+
     }
 
     changeScene() {
