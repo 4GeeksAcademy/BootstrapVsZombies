@@ -13,7 +13,7 @@ export class Game extends Phaser.Scene {
         super({ key: 'Game' });
     }
 
-    create() {        
+    create() {
 
         this.level = levels[0];
 
@@ -46,6 +46,7 @@ export class Game extends Phaser.Scene {
                 this.effects.sparkEmitter(server);
                 this.server.receiveDamage(this, server, Number(zombie.getData('damage')));
                 this.zombieManager.destroyZombie(zombie);
+                this.sound.play('zombieDead2');
             },
             null,
             this
@@ -59,6 +60,7 @@ export class Game extends Phaser.Scene {
                 this.effects.explosionFireEmitter(turret);
                 this.turret.receiveDamage(this, turret, Number(zombie.getData('damage')));
                 this.zombieManager.destroyZombie(zombie);
+                this.sound.play('zombieDead2');
             },
             null,
             this
@@ -72,7 +74,7 @@ export class Game extends Phaser.Scene {
                     const turretCol = turret.getData('col');
                     const zombiesInCol = this.zombies.getChildren().filter(zombie => zombie.getData('col') === turretCol);
                     if (zombiesInCol.length > 0) {
-                        this.bulletManager.fireBullet(turret, this.level.bulletDamage, this.level.bulletVelocityY);
+                        this.bulletManager.fireBullet(this, turret, this.level.bulletDamage, this.level.bulletVelocityY);
                     }
                 });
             },
@@ -82,7 +84,7 @@ export class Game extends Phaser.Scene {
         // --- COLISIÓN BALA-ZOMBIE ---
         this.physics.add.overlap(this.bulletManager.bullets, this.zombies, (bullet, zombie) => {
             const damage = bullet.getData('damage');
-            this.zombieManager.receiveDamage(zombie, damage);
+            this.zombieManager.receiveDamage(this, zombie, damage);
             this.effects.bloodEmitter(zombie, 0, -10);
             const emitter = bullet.getData('rocketEmitter');
             if (emitter) emitter.destroy();

@@ -57,16 +57,18 @@ export class ZombieObject {
         bar.fillRect(40 * percent, 0, 40 * (1 - percent), 5);
     }
 
-    receiveDamage(zombie, amount) {
+    receiveDamage(scene, zombie, amount) {
         let health = Number(zombie.getData('health'));
         health -= amount;
         zombie.setData('health', health);
         // Actualizar barra de vida
         if (zombie.healthBar) {
             this.drawHealthBar(zombie.healthBar, health);
+            this.scene.sound.play('zombieHit1');
         }
         if (health <= 0) {
             this.destroyZombie(zombie);
+            this.scene.sound.play('zombieDead1');
         }
     }
 

@@ -6,7 +6,7 @@ export class BulletObject {
         scene.bullets = this.bullets;
     }
 
-    fireBullet(turret, damage = 100, velocityY = 100) {
+    fireBullet(scene, turret, damage = 100, velocityY = 100) {
         const bullet = this.scene.physics.add.image(turret.x, turret.y + 25, 'bullet');
         bullet.setDisplaySize(16, 20);
         bullet.body.setAllowGravity(false);
@@ -27,6 +27,7 @@ export class BulletObject {
             follow: bullet
         });
         bullet.setData('rocketEmitter', rocketEmitter);
+        this.scene.sound.play('shot');
         return bullet;
     }
 }
