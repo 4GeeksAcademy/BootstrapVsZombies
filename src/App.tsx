@@ -10,8 +10,9 @@ import Profile from "./pages/Profile";
 import BackendTest from "./pages/BackendTest";
 import NotFound from "./pages/NotFound";
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import { useRef, useState, useEffect } from 'react';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient();   
 
 const App = () => (
   <QueryClientProvider client={queryClient}>

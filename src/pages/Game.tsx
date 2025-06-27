@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import Navigation from '../components/Navigation';
@@ -7,10 +7,25 @@ import GameBoard from '../components/GameBoard';
 import ClassSelector from '../components/ClassSelector';
 import GameStats from '../components/GameStats';
 import { useAuth } from '../hooks/useAuth';
+import PhaserGame from '../components/PhaserGame';
 
 const Game: React.FC = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+
+  //start
+
+  const phaserRef = useRef(null);
+  const changeScene = () => {
+
+    const scene = phaserRef.current.scene;
+
+    if (scene) {
+      scene.changeScene();
+    }
+  }
+
+  //end
 
   useEffect(() => {
     if (!loading && !user) {
@@ -38,13 +53,10 @@ const Game: React.FC = () => {
       <Navigation />
       <Container fluid>
         <Row>
-          <Col lg={9}>
-            <GameStats />
-            <GameBoard />
-          </Col>
-          <Col lg={3}>
-            <ClassSelector />
-          </Col>
+          <PhaserGame ref={phaserRef} />
+          <div>
+            <button className="button" onClick={changeScene}>Reset Scene</button>
+          </div>
         </Row>
       </Container>
     </>

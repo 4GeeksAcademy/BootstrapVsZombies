@@ -1,8 +1,8 @@
 import { forwardRef, useEffect, useLayoutEffect, useRef } from 'react';
-import StartGame from './game/main';
-import { EventBus } from './game/EventBus';
+import StartGame from '../game/main';
+import { EventBus } from '../game/EventBus';
 
-export const PhaserGame = forwardRef(function PhaserGame ({ currentActiveScene }, ref)
+const PhaserGame = forwardRef(function PhaserGame ({ currentActiveScene }, ref)
 {
     const game = useRef();
 
@@ -55,3 +55,5 @@ export const PhaserGame = forwardRef(function PhaserGame ({ currentActiveScene }
     );
 
 });
+
+export default PhaserGame
