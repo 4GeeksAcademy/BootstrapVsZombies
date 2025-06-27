@@ -11,6 +11,8 @@ import PhaserGame from '../components/PhaserGame';
 const Game: React.FC = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+
+  ////////// PHASER START /////////////
   const phaserRef = useRef(null);
   const changeScene = () => {
 
@@ -21,13 +23,13 @@ const Game: React.FC = () => {
     }
   }
 
+  ////////// PHASER END /////////////
+
   useEffect(() => {
     if (!loading && !user) {
       navigate('/login');
     }
-    // Emitir el usuario a Phaser cuando esté disponible
     if (user) {
-      // Lazy import para evitar problemas de SSR o duplicidad
       import('../game/EventBus').then(({ EventBus, USER_EVENT }) => {
         EventBus.emit(USER_EVENT, user);
       });
@@ -52,14 +54,22 @@ const Game: React.FC = () => {
   return (
     <>
       <Navigation />
-      <Container fluid>
-        <Row>
-          <PhaserGame ref={phaserRef} />
-          <div>
+      <div className='container'>
+        <div>
+          <GameStats />
+        </div>
+        <div className='row justify-content-center'>
+          <div className='col-2'>
             <button className="button" onClick={changeScene}>Reset Scene</button>
           </div>
-        </Row>
-      </Container>
+          <div className='col-8'>
+            <PhaserGame ref={phaserRef} />
+          </div>
+          <div>
+            <ClassSelector />
+          </div>
+        </div>
+      </div>
     </>
   );
 };
