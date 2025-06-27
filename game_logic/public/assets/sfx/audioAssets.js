@@ -5,4 +5,5 @@ export const audioAssets = [
     { key: 'zombieDead1', path: 'sfx/zombie_dead_1.wav' },
     { key: 'zombieDead2', path: 'sfx/zombie_dead_2.wav' },
     { key: 'shot', path: 'sfx/shot.wav' },
+    { key: 'closeEncounter4', path: 'sfx/close_encounter_4.wav' },
 ];
