@@ -91,7 +91,6 @@ export class Game extends Phaser.Scene {
         this.physics.add.overlap(this.bulletManager.bullets, this.zombies, (bullet, zombie) => {
             const damage = bullet.getData('damage');
             this.zombieManager.receiveDamage(this, zombie, damage);
-            this.effects.bloodEmitter(zombie, 0, -10);
             const emitter = bullet.getData('rocketEmitter');
             if (emitter) emitter.destroy();
             bullet.destroy();

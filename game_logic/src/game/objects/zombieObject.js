@@ -65,10 +65,12 @@ export class ZombieObject {
         if (zombie.healthBar) {
             this.drawHealthBar(zombie.healthBar, health);
             this.scene.sound.play('zombieHit1');
+            this.scene.effects.bloodEmitter(zombie, 0, -10, 10);
         }
         if (health <= 0) {
             this.destroyZombie(zombie);
             this.scene.sound.play('zombieDead1');
+            this.scene.effects.bloodEmitter(zombie, 0, -10, 100);
         }
     }
 
