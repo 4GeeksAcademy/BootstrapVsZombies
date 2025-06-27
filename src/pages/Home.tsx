@@ -93,24 +93,6 @@ const Home: React.FC = () => {
               </Card.Body>
             </Card>
           </Col>
-          
-          {/* Learning Resources Card */}
-          <Col md={4} className="mb-3">
-            <Card className="h-100 shadow-sm border-warning">
-              <Card.Body className="text-center d-flex flex-column">
-                <Card.Title className="text-warning">📚 Learn & Practice</Card.Title>
-                <Card.Text className="flex-grow-1">
-                  Master Bootstrap flexbox utilities through interactive gameplay. 
-                  Each battle teaches you essential CSS skills for modern web development.
-                </Card.Text>
-                <Link to="/login" className="mt-auto">
-                  <Button variant="warning" size="lg" className="w-100">
-                    🎓 Join Academy
-                  </Button>
-                </Link>
-              </Card.Body>
-            </Card>
-          </Col>
         </Row>
 
         {/* How to Play Section */}
