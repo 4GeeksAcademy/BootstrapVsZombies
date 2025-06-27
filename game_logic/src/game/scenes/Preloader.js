@@ -1,5 +1,6 @@
 import { Scene } from 'phaser';
 import { audioAssets } from '../../../public/assets/sfx/audioAssets';
+import { imageAssets } from '../../../public/assets/images/imageAssets';
 
 export class Preloader extends Scene {
     constructor() {
@@ -31,15 +32,10 @@ export class Preloader extends Scene {
         //  Load the assets for the game - Replace with your own assets
         this.load.setPath('assets');
 
-        this.load.image('turret_vsc', 'turret_vsc.png');
-        this.load.image('zombie', 'zombie.png');
-        this.load.image('bullet', 'bullet.png');
-        this.load.image('server', 'server.png');
-        this.load.image('logo', 'logo.png');
-        this.load.image('star', 'star.png');
-        this.load.image('spark', 'spark.png');
-        this.load.image('blood', 'blood.png');
-        this.load.image('explosion_fire', 'explosion_fire.png');
+        imageAssets.forEach(img => {
+            this.load.image(img.key, img.path);
+            console.log(img.key, " y ", img.path)
+        });
 
         audioAssets.forEach(audio => {
             this.load.audio(audio.key, audio.path);
@@ -49,6 +45,10 @@ export class Preloader extends Scene {
     }
 
     create() {
+        const bg = this.add.image(0, 0, 'background').setOrigin(0);
+        bg.displayWidth = this.sys.game.config.width;
+        bg.displayHeight = this.sys.game.config.height;
+
         //  When all the assets have loaded, it's often worth creating global objects here that the rest of the game can use.
         //  For example, you can define global animations here, so we can use them in other scenes.
 
