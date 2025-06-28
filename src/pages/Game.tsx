@@ -14,15 +14,6 @@ const Game: React.FC = () => {
 
   ////////// PHASER START /////////////
   const phaserRef = useRef(null);
-  const changeScene = () => {
-
-    const scene = phaserRef.current.scene;
-
-    if (scene) {
-      scene.changeScene();
-    }
-  }
-
   ////////// PHASER END /////////////
 
   useEffect(() => {
@@ -55,17 +46,14 @@ const Game: React.FC = () => {
     <>
       <Navigation />
       <div className='container'>
-        <div>
-          <GameStats />
+        <div className='row'>
+          <GameStats phaserRef={phaserRef} />
         </div>
         <div className='row justify-content-center'>
-          <div className='col-2'>
-            <button className="button" onClick={changeScene}>Reset Scene</button>
-          </div>
           <div className='col-8'>
             <PhaserGame ref={phaserRef} />
           </div>
-          <div>
+          <div className='col-4'>
             <ClassSelector />
           </div>
         </div>

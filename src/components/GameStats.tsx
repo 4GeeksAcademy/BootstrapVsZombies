@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Row, Col, Card, Button } from 'react-bootstrap';
 import { useGame } from '../context/GameContext';
@@ -28,7 +27,8 @@ import { useGame } from '../context/GameContext';
  * - Game state management (start/stop functionality)
  * - Level progression tracking
  */
-const GameStats: React.FC = () => {
+// Recibe phaserRef como prop
+const GameStats: React.FC<{ phaserRef?: React.RefObject<any> }> = ({ phaserRef }) => {
   // Access global game state and dispatch function from Context
   const { state, dispatch } = useGame();
 
@@ -38,6 +38,10 @@ const GameStats: React.FC = () => {
    */
   const handleStartGame = () => {
     dispatch({ type: 'START_GAME' });
+    // Cambia de escena si la referencia existe
+    if (phaserRef && phaserRef.current && phaserRef.current.scene && phaserRef.current.scene.changeScene) {
+      phaserRef.current.scene.changeScene();
+    }
   };
 
   /**
