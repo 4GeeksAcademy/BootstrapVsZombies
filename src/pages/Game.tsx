@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import Navigation from '../components/Navigation';
-import GameBoard from '../components/GameBoard';
 import ClassSelector from '../components/ClassSelector';
 import GameStats from '../components/GameStats';
 import { useAuth } from '../hooks/useAuth';
