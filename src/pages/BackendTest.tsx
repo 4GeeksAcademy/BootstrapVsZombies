@@ -22,7 +22,7 @@ interface GameStats {
   zombies_defeated: number;
 }
 
-const AUTHORIZED_EMAIL = 'sebasmiramontes@gmail.com';
+const AUTHORIZED_EMAILS = ['sebasmiramontes@gmail.com', 'esgo.edwin@gmail.com'];
 
 const BackendTest: React.FC = () => {
   const { user, loading } = useAuth();
@@ -40,12 +40,12 @@ const BackendTest: React.FC = () => {
   useEffect(() => {
     if (!loading && !user) {
       navigate('/login');
-    } else if (user && user.email !== AUTHORIZED_EMAIL) {
+    } else if (user && !AUTHORIZED_EMAILS.includes(user.email)) {
       setMessage({ type: 'error', text: 'Access denied. This tool is restricted to authorized users only.' });
       setTimeout(() => {
         navigate('/');
       }, 2000);
-    } else if (user && user.email === AUTHORIZED_EMAIL) {
+    } else if (user && AUTHORIZED_EMAILS.includes(user.email)) {
       fetchGameData();
     }
   }, [user, loading, navigate]);
@@ -172,7 +172,7 @@ const BackendTest: React.FC = () => {
     );
   }
 
-  if (!user || user.email !== AUTHORIZED_EMAIL) {
+  if (!user || !AUTHORIZED_EMAILS.includes(user.email)) {
     return (
       <>
         <Navigation />
