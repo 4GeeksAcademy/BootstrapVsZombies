@@ -218,6 +218,11 @@ const Login: React.FC = () => {
                     {loading ? 'Loading...' : (isRegister ? 'Join the Battle' : 'Enter the Battle')}
                   </Button>
                 </Form>
+                {!isRegister && (
+                  <div className="text-center mb-3">
+                    <a href="/forgot-password">Forgot your password?</a>
+                  </div>
+                )}
                 
                 <div className="text-center">
                   <Button
