@@ -3,7 +3,7 @@ import sys
 import pytest
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
-from flask_backend.app import app, db, User, GameSession
+from backend.app import app, db, User, GameSession
 
 @pytest.fixture()
 def client(tmp_path):
