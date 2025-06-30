@@ -1,0 +1,10 @@
+pytest
+fastapi
+uvicorn
+sqlalchemy
+pydantic
+Flask
+Flask-JWT-Extended
+Flask-Bcrypt
+Flask-SQLAlchemy
+python-dotenv

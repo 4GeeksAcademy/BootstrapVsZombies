@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Button, Form, Alert, Table } from 'react-bootstrap';
 import { useAuth } from '../hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import Navigation from '../components/Navigation';
+// Use the FastAPI backend instead of direct Supabase access
+const API_BASE_URL = 'http://localhost:8000';
 
 interface GameSession {
-  id: string;
+  id: number;
   score: number;
   level_reached: number;
   zombies_defeated: number;
@@ -55,30 +56,15 @@ const BackendTest: React.FC = () => {
     
     setIsLoading(true);
     try {
-      // Fetch game stats
-      const { data: statsData, error: statsError } = await supabase
-        .from('game_stats')
-        .select('*')
-        .eq('user_id', user.id)
-        .single();
-
-      if (statsError && statsError.code !== 'PGRST116') {
-        throw statsError;
-      }
-
+      const statsRes = await fetch(`${API_BASE_URL}/stats/${user.id}`);
+      if (!statsRes.ok) throw new Error('Stats request failed');
+      const statsData = await statsRes.json();
       setGameStats(statsData);
 
-      // Fetch game sessions
-      const { data: sessionsData, error: sessionsError } = await supabase
-        .from('game_sessions')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('completed_at', { ascending: false })
-        .limit(10);
-
-      if (sessionsError) throw sessionsError;
-
-      setGameSessions(sessionsData || []);
+      const sessionsRes = await fetch(`${API_BASE_URL}/sessions?user_id=${user.id}`);
+      if (!sessionsRes.ok) throw new Error('Sessions request failed');
+      const sessionsData = await sessionsRes.json();
+      setGameSessions(sessionsData);
     } catch (error) {
       console.error('Error fetching game data:', error);
       setMessage({ type: 'error', text: 'Failed to fetch game data' });
@@ -97,46 +83,17 @@ const BackendTest: React.FC = () => {
 
     setIsLoading(true);
     try {
-      // Create game session
-      const { error: sessionError } = await supabase
-        .from('game_sessions')
-        .insert({
+      await fetch(`${API_BASE_URL}/sessions`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
           user_id: user.id,
           score,
           level_reached: level,
           zombies_defeated: zombies,
           duration_seconds: duration
-        });
-
-      if (sessionError) throw sessionError;
-
-      // Update game stats
-      const currentStats = gameStats || {
-        total_games: 0,
-        high_score: 0,
-        total_score: 0,
-        levels_completed: 0,
-        zombies_defeated: 0
-      };
-
-      const updatedStats = {
-        total_games: currentStats.total_games + 1,
-        high_score: Math.max(currentStats.high_score, score),
-        total_score: currentStats.total_score + score,
-        levels_completed: Math.max(currentStats.levels_completed, level),
-        zombies_defeated: currentStats.zombies_defeated + zombies
-      };
-
-      const { error: statsError } = await supabase
-        .from('game_stats')
-        .upsert({
-          user_id: user.id,
-          ...updatedStats
-        }, {
-          onConflict: 'user_id'
-        });
-
-      if (statsError) throw statsError;
+        })
+      });
 
       setMessage({ type: 'success', text: 'Test score added successfully!' });
       setTestScore('');

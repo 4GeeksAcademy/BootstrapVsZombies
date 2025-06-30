@@ -116,6 +116,14 @@ npm run dev
 # Open http://localhost:5173 in your browser
 ```
 
+### Environment Variables
+Create a `.env` file in the project root with your Supabase credentials:
+
+```bash
+VITE_SUPABASE_URL=<your-supabase-url>
+VITE_SUPABASE_ANON_KEY=<your-anon-key>
+```
+
 ### Development Commands
 ```bash
 npm run dev          # Start development server
@@ -172,7 +180,7 @@ Each component includes comprehensive JSDoc comments explaining:
 ```
 bootstrap-vs-zombies/
 ├── frontend/          # Current React application
-├── backend/           # Express.js API server
+├── backend/           # Flask API server
 │   ├── auth/         # User authentication endpoints
 │   ├── scores/       # Leaderboard management
 │   ├── analytics/    # Learning progress tracking
@@ -180,6 +188,19 @@ bootstrap-vs-zombies/
 ├── shared/           # TypeScript interfaces
 └── database/         # PostgreSQL schema and migrations
 ```
+
+### Flask API Overview
+
+#### Environment Variables
+- `FLASK_SECRET_KEY` – session secret used by Flask
+- `JWT_SECRET_KEY` – key for signing JWT access tokens
+- `DATABASE_URL` – SQLAlchemy database connection string
+  (see [`backend/.env.example`](backend/.env.example))
+
+#### Endpoints
+- `POST /api/auth/register` – create a new user
+- `POST /api/auth/login` – authenticate a user and return a JWT
+- `GET /api/auth/me` – return the authenticated user profile
 
 ### Planned Features
 - **User Accounts**: Persistent progress tracking
@@ -218,6 +239,35 @@ We welcome contributions that enhance the educational value of the project!
 3. Make your changes with comprehensive documentation
 4. Test thoroughly (both educational and technical aspects)
 5. Submit a pull request with detailed description
+
+## 🚀 Deployment
+
+The project includes Docker configuration for running the React frontend and Flask backend.
+
+### Local development
+
+1. Build the Docker images and start the stack:
+   ```bash
+   docker compose up --build
+   ```
+2. Access the frontend at [http://localhost:5173](http://localhost:5173) and the API at [http://localhost:5000](http://localhost:5000).
+
+### Deploying to Render
+
+1. Create a new **Web Service** on Render and point it to the `backend/` directory. Render will build the image from `backend/Dockerfile`.
+2. Create a **Static Site** for the React frontend. Set the build command to `npm run build` and the publish directory to `dist`.
+3. Configure environment variables such as `FLASK_SECRET_KEY`, `JWT_SECRET_KEY`,
+   and `DATABASE_URL` on each service.
+
+### Deploying to Heroku
+
+1. Install the [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli) and log in.
+2. Use Heroku's container registry to deploy the backend:
+   ```bash
+   heroku container:push web -a your-backend-app -R backend
+   heroku container:release web -a your-backend-app
+   ```
+3. For the frontend, create a separate app using the Node buildpack. Set `heroku-postbuild` to `npm run build` and serve the static files with a simple server such as `serve` or `vite preview`.
 
 ## 📄 License
 
