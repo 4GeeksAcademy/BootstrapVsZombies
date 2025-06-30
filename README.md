@@ -219,6 +219,34 @@ We welcome contributions that enhance the educational value of the project!
 4. Test thoroughly (both educational and technical aspects)
 5. Submit a pull request with detailed description
 
+## 🚀 Deployment
+
+The project includes Docker configuration for running the React frontend and Flask backend.
+
+### Local development
+
+1. Build the Docker images and start the stack:
+   ```bash
+   docker compose up --build
+   ```
+2. Access the frontend at [http://localhost:5173](http://localhost:5173) and the API at [http://localhost:5000](http://localhost:5000).
+
+### Deploying to Render
+
+1. Create a new **Web Service** on Render and point it to the `backend/` directory. Render will build the image from `backend/Dockerfile`.
+2. Create a **Static Site** for the React frontend. Set the build command to `npm run build` and the publish directory to `dist`.
+3. Configure environment variables (e.g., database URLs) on each service as needed.
+
+### Deploying to Heroku
+
+1. Install the [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli) and log in.
+2. Use Heroku's container registry to deploy the backend:
+   ```bash
+   heroku container:push web -a your-backend-app -R backend
+   heroku container:release web -a your-backend-app
+   ```
+3. For the frontend, create a separate app using the Node buildpack. Set `heroku-postbuild` to `npm run build` and serve the static files with a simple server such as `serve` or `vite preview`.
+
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
