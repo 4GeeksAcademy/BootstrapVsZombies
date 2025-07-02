@@ -3,8 +3,8 @@ import { Container, Row, Col, Card, Button, Form, Alert, Table } from 'react-boo
 import { useAuth } from '../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import Navigation from '../components/Navigation';
-// Use the FastAPI backend instead of direct Supabase access
-const API_BASE_URL = 'http://localhost:8000';
+// Use the Flask backend API
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
 
 interface GameSession {
   id: number;
