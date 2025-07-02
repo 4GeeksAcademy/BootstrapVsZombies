@@ -1,101 +1,62 @@
-
 import { useState, useEffect } from 'react';
-import { User, Session } from '@supabase/supabase-js';
-import { supabase } from '@/integrations/supabase/client';
+
+export interface AuthUser {
+  id: number;
+  email: string;
+  display_name?: string;
+}
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
 
 export const useAuth = () => {
-  const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        console.log('Auth state changed:', event, session?.user?.email);
-        setSession(session);
-        setUser(session?.user ?? null);
-        setLoading(false);
-      }
-    );
-
-    // Check for existing session
-    supabase.auth.getSession().then(({ data: { session }, error }) => {
-      if (error) {
-        console.error('Error getting session:', error);
-      }
-      console.log('Initial session check:', session?.user?.email);
-      setSession(session);
-      setUser(session?.user ?? null);
+    const token = localStorage.getItem('token');
+    if (!token) {
       setLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
+      return;
+    }
+    fetch(`${API_BASE_URL}/auth/me`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(res => res.ok ? res.json() : Promise.reject())
+      .then(data => setUser(data))
+      .catch(() => localStorage.removeItem('token'))
+      .finally(() => setLoading(false));
   }, []);
 
-  const signUp = async (email: string, password: string, displayName: string) => {
-    try {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/`,
-          data: {
-            display_name: displayName
-          }
-        }
-      });
-      
-      console.log('Sign up result:', { data, error });
-      return { data, error };
-    } catch (error) {
-      console.error('Sign up error:', error);
-      return { data: null, error };
-    }
+  const signUp = async (email: string, password: string, name: string) => {
+    const res = await fetch(`${API_BASE_URL}/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password, name })
+    });
+    if (!res.ok) throw new Error((await res.json()).msg || 'Registration failed');
+    const data = await res.json();
+    localStorage.setItem('token', data.token);
+    setUser({ ...data.user, display_name: name });
+    return { data, error: null };
   };
 
   const signIn = async (email: string, password: string) => {
-    try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password
-      });
-      
-      console.log('Sign in result:', { data, error });
-      return { data, error };
-    } catch (error) {
-      console.error('Sign in error:', error);
-      return { data: null, error };
-    }
+    const res = await fetch(`${API_BASE_URL}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    if (!res.ok) throw new Error((await res.json()).msg || 'Login failed');
+    const data = await res.json();
+    localStorage.setItem('token', data.token);
+    setUser(data.user);
+    return { data, error: null };
   };
 
   const signOut = async () => {
-    try {
-      console.log('Signing out user:', user?.email);
-      const { error } = await supabase.auth.signOut();
-      
-      if (error) {
-        console.error('Sign out error:', error);
-      } else {
-        console.log('Successfully signed out');
-        // Clear local state
-        setUser(null);
-        setSession(null);
-      }
-      
-      return { error };
-    } catch (error) {
-      console.error('Sign out error:', error);
-      return { error };
-    }
+    localStorage.removeItem('token');
+    setUser(null);
   };
 
-  return {
-    user,
-    session,
-    loading,
-    signUp,
-    signIn,
-    signOut
-  };
+  return { user, loading, signUp, signIn, signOut };
 };

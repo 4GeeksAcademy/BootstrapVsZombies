@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Button, Form, Alert } from 'react-bootstrap';
 import { useAuth } from '../hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
 import { useNavigate } from 'react-router-dom';
 import Navigation from '../components/Navigation';
 
@@ -42,19 +42,21 @@ const Profile: React.FC = () => {
 
   const fetchProfile = async () => {
     if (!user) return;
-    
+
     setIsLoading(true);
     try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', user.id)
-        .single();
-
-      if (error) throw error;
-
-      setProfile(data);
-      setDisplayName(data.display_name);
+      const res = await fetch(`${API_BASE_URL}/auth/me`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      });
+      if (!res.ok) throw new Error('request failed');
+      const data = await res.json();
+      setProfile({
+        id: data.id,
+        display_name: data.display_name || data.email,
+        avatar_url: null,
+        created_at: new Date().toISOString()
+      });
+      setDisplayName(data.display_name || '');
     } catch (error) {
       console.error('Error fetching profile:', error);
       setMessage({ type: 'error', text: 'Failed to fetch profile' });
@@ -65,18 +67,11 @@ const Profile: React.FC = () => {
 
   const fetchGameStats = async () => {
     if (!user) return;
-    
+
     try {
-      const { data, error } = await supabase
-        .from('game_stats')
-        .select('*')
-        .eq('user_id', user.id)
-        .single();
-
-      if (error && error.code !== 'PGRST116') {
-        throw error;
-      }
-
+      const res = await fetch(`${API_BASE_URL}/stats/${user.id}`);
+      if (!res.ok) throw new Error('request failed');
+      const data = await res.json();
       setGameStats(data);
     } catch (error) {
       console.error('Error fetching game stats:', error);
@@ -88,15 +83,15 @@ const Profile: React.FC = () => {
 
     setIsLoading(true);
     try {
-      const { error } = await supabase
-        .from('profiles')
-        .update({
-          display_name: displayName,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', user.id);
-
-      if (error) throw error;
+      const res = await fetch(`${API_BASE_URL}/profiles/${user.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({ display_name: displayName })
+      });
+      if (!res.ok) throw new Error('request failed');
 
       setMessage({ type: 'success', text: 'Profile updated successfully!' });
       setIsEditing(false);
