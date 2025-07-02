@@ -117,11 +117,9 @@ npm run dev
 ```
 
 ### Environment Variables
-Create a `.env` file in the project root with your Supabase credentials:
-
-```bash
-VITE_SUPABASE_URL=<your-supabase-url>
-VITE_SUPABASE_ANON_KEY=<your-anon-key>
+Create a `.env` file in the project root with your API URL:
+```
+VITE_API_BASE_URL=http://localhost:5000/api
 ```
 
 ### Development Commands
